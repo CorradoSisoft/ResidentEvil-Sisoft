@@ -3,14 +3,18 @@ using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
-    public GameObject pauseMenuUI;   // Il pannello del menu pausa
-    private bool isPaused = false;
+    public static bool IsPaused = false;
+
+    public GameObject pauseMenuUI;
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (isPaused) Resume();
+            // Non aprire pausa se inventario è aperto
+            if (!IsPaused && InventoryManager.Instance.IsOpen) return;
+
+            if (IsPaused) Resume();
             else Pause();
         }
     }
@@ -18,8 +22,8 @@ public class PauseMenu : MonoBehaviour
     void Pause()
     {
         pauseMenuUI.SetActive(true);
-        Time.timeScale = 0f;         // Ferma il gioco
-        isPaused = true;
+        Time.timeScale = 0f;
+        IsPaused = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -27,8 +31,8 @@ public class PauseMenu : MonoBehaviour
     public void Resume()
     {
         pauseMenuUI.SetActive(false);
-        Time.timeScale = 1f;         // Riprende il gioco
-        isPaused = false;
+        Time.timeScale = 1f;
+        IsPaused = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }

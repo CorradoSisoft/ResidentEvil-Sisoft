@@ -34,6 +34,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        // Blocca tutto se pausa o inventario aperti
+        if (PauseMenu.IsPaused || InventoryManager.Instance.IsOpen) return;
+
         HandleShootingInput();
         RotateModel();
         UpdateAnimator();
@@ -42,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (PauseMenu.IsPaused || InventoryManager.Instance.IsOpen) return;
         MovementPlayer();
     }
 
