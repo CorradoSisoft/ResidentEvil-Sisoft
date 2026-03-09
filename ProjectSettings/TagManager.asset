@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Zombie
+  - Barra
   layers:
   - Default
   - TransparentFX

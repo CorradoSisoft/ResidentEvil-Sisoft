@@ -28,6 +28,11 @@ public class MainMenu : MonoBehaviour
     public void Play()
     {
         StartCoroutine(PlaySequence());
+        /* mainMenuPanel.SetActive(false);
+        gameplayPanel.SetActive(true);
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false; */
     }
 
     private IEnumerator PlaySequence()
@@ -64,7 +69,6 @@ public class MainMenu : MonoBehaviour
         else
         {
             yield return FadeManager.Instance.FadeInRoutine(); // solo se non c'è intro
-            GameManager.Instance.SetState(GameState.Exploration);
         }
     }
 

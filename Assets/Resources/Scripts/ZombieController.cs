@@ -23,6 +23,13 @@ public class ZombieController : MonoBehaviour
     public Material bloodMaterial;
     public Transform bloodOrigin; // Trascina qui l'Empty GameObject figlio
 
+    [Header("Attack")]
+    public int attackDamage = 1;
+    public float attackRange = 1.2f;
+    public float attackCooldown = 1.5f;
+
+    private float lastAttackTime = 0f;
+
     private Rigidbody rb;
     private Transform player;
     private bool isDead = false;
@@ -56,7 +63,30 @@ public class ZombieController : MonoBehaviour
         if (isDead || player == null) return;
 
         if (hasSeenPlayer)
-            ChasePlayer();
+        {
+            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+            if (distanceToPlayer <= attackRange)
+                TryAttack();
+            else
+                ChasePlayer();
+        }
+    }
+
+    void TryAttack()
+    {
+        // Fermo quando attacca
+        rb.linearVelocity = Vector3.zero;
+
+        if (Time.time - lastAttackTime < attackCooldown) return;
+
+        lastAttackTime = Time.time;
+
+        PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+            playerHealth.TakeDamage(attackDamage);
+
+        Debug.Log($"Zombie attacca! Danno: {attackDamage}");
     }
 
     bool CanSeePlayer()

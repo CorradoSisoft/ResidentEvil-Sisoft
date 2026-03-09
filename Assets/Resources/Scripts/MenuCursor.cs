@@ -20,6 +20,11 @@ public class MenuCursor : MonoBehaviour
     [SerializeField] private float levitationAmplitude = 5f;
     [SerializeField] private float levitationSpeed = 2f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip moveSound;
+    [SerializeField] private AudioClip pressSound;
+
     private RectTransform childRect;
 
     void Start()
@@ -91,13 +96,19 @@ public class MenuCursor : MonoBehaviour
     public void MoveUp()
     {
         if (currentIndex > 0)
+        {
             currentIndex--;
+            PlayMoveSound();
+        }
     }
 
     public void MoveDown()
     {
         if (currentIndex < menuItemsCount - 1)
+        {
             currentIndex++;
+            PlayMoveSound();
+        }
     }
     
     // ← METODO PUBBLICO PER BATTLEMANAGER
@@ -118,9 +129,22 @@ public class MenuCursor : MonoBehaviour
             currentIndex < menuButtons.Length && 
             menuButtons[currentIndex] != null)
         {
+            PlayPressSound();
             Debug.Log($"Pressed button: {menuButtons[currentIndex].name}");
             menuButtons[currentIndex].onClick.Invoke();
         }
+    }
+
+    private void PlayMoveSound()
+    {
+        if (audioSource != null && moveSound != null)
+            audioSource.PlayOneShot(moveSound);
+    }
+
+    private void PlayPressSound()
+    {
+        if (audioSource != null && pressSound != null)
+            audioSource.PlayOneShot(pressSound);
     }
 
     private void setTextColor(int index, Color color)

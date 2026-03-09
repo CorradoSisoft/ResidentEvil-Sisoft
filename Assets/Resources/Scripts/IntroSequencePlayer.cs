@@ -52,7 +52,6 @@ public class IntroSequencePlayer : MonoBehaviour
     {
         Debug.Log($"[IntroPlayer] Inizio sequenza: {data.sequenceName}");
         
-        // Schermo nero iniziale
         if (FadeManager.Instance != null)
             FadeManager.Instance.SetFadeInstant(1f);
 
@@ -62,33 +61,34 @@ public class IntroSequencePlayer : MonoBehaviour
         foreach (var line in data.lines)
         {
             SetupImage(line.image);
-
             introText.text = line.text;
             introText.fontSize = line.textSize;
 
             // Fade in
             yield return FadeVisuals(0f, 1f, line.fadeSpeed);
 
-            // Mostra testo
-            yield return new WaitForSeconds(line.lineDelay);
+            // Mostra testo — aspetta lineDelay ma skippabile con Invio
+            float elapsed = 0f;
+            while (elapsed < line.lineDelay)
+            {
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+                    break; // skip
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
 
             // Fade out
             yield return FadeVisuals(1f, 0f, line.fadeSpeed);
 
-            // Pausa tra righe
             yield return new WaitForSeconds(0.5f);
         }
 
         if (introPanel != null)
             introPanel.SetActive(false);
 
-        // Fade in gameplay
         if (FadeManager.Instance != null)
             yield return FadeManager.Instance.FadeInRoutine();
 
-        // ← POST-SEQUENCE ACTIONS
-        
-        // Setta flag se specificato
         if (!string.IsNullOrEmpty(data.completionFlag))
         {
             GameManager.Instance.SetFlag(data.completionFlag);
@@ -96,20 +96,12 @@ public class IntroSequencePlayer : MonoBehaviour
         }
 
         GameManager.Instance.SetState(GameState.Exploration);
-
         Debug.Log($"[IntroPlayer] Sequenza completata: {data.sequenceName}");
 
-        // ← Per triggerare cutscene dopo intro, usa EventTrigger con flagCondition
-        //Esempio: EventTrigger con flagCondition="prologo_completed"
-        //avviare la cutscene
-        /* CutsceneTrigger cutsceneTrigger = FindObjectOfType<CutsceneTrigger>();
-        Debug.Log($"[IntroPlayer] CutsceneTrigger trovato: {(cutsceneTrigger != null ? cutsceneTrigger.gameObject.name : "Nessuno")}");
-        if (cutsceneTrigger != null) cutsceneTrigger.OnTriggerEnter2D(FindObjectOfType<PlayerController>().GetComponent<Collider2D>()); */
-
-        
         onComplete?.Invoke();
     }
 
+    
     private void SetupImage(Sprite sprite)
     {
         if (introImage == null)

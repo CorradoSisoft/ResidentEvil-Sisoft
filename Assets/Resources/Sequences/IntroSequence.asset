@@ -15,45 +15,8 @@ MonoBehaviour:
   sequenceName: introGame
   completionFlag: 
   lines:
-  - text: '- Resident Evil: Sisoft -
-
-
-      By CorryWestSide'
-    image: {fileID: 0}
-    textSize: 24
-    fadeSpeed: 2
-    lineDelay: 2
-  - text: 9 Marzo 2026
-    image: {fileID: 0}
-    textSize: 24
-    fadeSpeed: 1
-    lineDelay: 2
-  - text: Mi chiamo Salvatore Leonardi, ma tutti mi chiamano Leon,
-    image: {fileID: 0}
-    textSize: 24
-    fadeSpeed: 1
-    lineDelay: 2
-  - text: 'ho ricevuto uno strano messaggio che recitava:
-
-      "Perdonami se ho
-      fallito...mi troverai al posto delle perdute speranze..."'
-    image: {fileID: 0}
-    textSize: 24
-    fadeSpeed: 1
-    lineDelay: 3
-  - text: "Sapevo gi\xE0 a cosa si riferisse, era la Sisoft srl per cui lui lavorava...\nsper
-      tanto non sia troppo tardi amico mio.."
-    image: {fileID: 0}
-    textSize: 24
-    fadeSpeed: 1
-    lineDelay: 3
-  - text: "Scoprir\xF2 cosa nasconde quell'azienda e ti trover\xF2 amico mio, resisti!"
-    image: {fileID: 0}
-    textSize: 24
-    fadeSpeed: 1
-    lineDelay: 3
   - text: 
     image: {fileID: 0}
-    textSize: 24
-    fadeSpeed: 1
-    lineDelay: 3
+    textSize: 0
+    fadeSpeed: 0
+    lineDelay: 0

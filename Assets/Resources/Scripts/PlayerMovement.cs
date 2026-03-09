@@ -115,15 +115,23 @@ public class PlayerMovement : MonoBehaviour
         {
             if (h.collider.gameObject.layer == playerLayer) continue;
 
+            // Controlla se è una Barra
+            if (h.collider.CompareTag("Barra"))
+            {
+                Debug.DrawRay(shootOrigin.position, playerModel.forward * h.distance, Color.yellow, 2f);
+                Destroy(h.collider.gameObject);
+                break;
+            }
+
             ZombieController zombie = h.collider.GetComponentInParent<ZombieController>();
             if (zombie != null)
             {
-                Debug.DrawRay(shootOrigin.position, playerModel.forward * h.distance, Color.red, 2f); // rosso = zombie colpito
+                Debug.DrawRay(shootOrigin.position, playerModel.forward * h.distance, Color.red, 2f);
                 zombie.TakeDamage(1);
             }
             else
             {
-                Debug.DrawRay(shootOrigin.position, playerModel.forward * h.distance, Color.green, 2f); // verde = ostacolo
+                Debug.DrawRay(shootOrigin.position, playerModel.forward * h.distance, Color.green, 2f);
             }
             break;
         }
