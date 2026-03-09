@@ -146,6 +146,26 @@ public static class AssetManagerTools
     static bool RimuoviPrefisso_Validate() => Selection.objects.Length > 0;
 
     // ─────────────────────────────────────────────
+    //  NUMERA OGGETTI SELEZIONATI
+    // ─────────────────────────────────────────────
+
+    [MenuItem("Tools/Asset Manager/Numera selezionati...", false, 20)]
+    static void NumeraSelezionati()
+    {
+        if (Selection.gameObjects.Length > 0 && !HasProjectAssets())
+            NumberingWindow.Open(Selection.gameObjects.ToList(), null);
+        else
+        {
+            var assets = GetSelectedAssets();
+            if (assets.Count == 0) { EditorUtility.DisplayDialog("Nessuna selezione", "Seleziona almeno un oggetto.", "OK"); return; }
+            NumberingWindow.Open(null, assets);
+        }
+    }
+
+    [MenuItem("Tools/Asset Manager/Numera selezionati...", true)]
+    static bool NumeraSelezionati_Validate() => Selection.objects.Length > 0;
+
+    // ─────────────────────────────────────────────
     //  TROVA E SOSTITUISCI NEL NOME
     // ─────────────────────────────────────────────
 
@@ -521,4 +541,114 @@ public class PrefixSuffixWindow : EditorWindow
     }
 
     void Apply() => AssetManagerTools.ApplyRename(_gos, _assets, (name, _) => _prefix + name + _suffix);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  FINESTRA: NUMERA OGGETTI
+// ══════════════════════════════════════════════════════════════
+public class NumberingWindow : EditorWindow
+{
+    List<GameObject> _gos;
+    List<string> _assets;
+
+    // Opzioni
+    string _separator = "_";          // es. "_", " ", "-", "."
+    int _startIndex = 1;
+    bool _padZero = true;             // 01, 02 ... oppure 1, 2 ...
+    enum Position { Suffix, Prefix }
+    Position _position = Position.Suffix;
+    bool _stripExisting = true;       // rimuove eventuali numeri già presenti
+    Vector2 _scroll;
+
+    public static void Open(List<GameObject> gos, List<string> assets)
+    {
+        var w = GetWindow<NumberingWindow>("Numera Oggetti");
+        w._gos = gos;
+        w._assets = assets;
+        w.minSize = new Vector2(420, 360);
+    }
+
+    List<string> SourceNames()
+    {
+        if (_gos != null && _gos.Count > 0)
+            return _gos.Select(g => g.name).ToList();
+        if (_assets != null && _assets.Count > 0)
+            return _assets.Select(p => Path.GetFileNameWithoutExtension(p)).ToList();
+        return new List<string>();
+    }
+
+    string BuildNumbered(string name, int index, int total)
+    {
+        if (_stripExisting)
+        {
+            // Rimuove sia suffissi che prefissi numerici già presenti
+            name = Regex.Replace(name, @"^\d+[\s_\-\.]+", "");       // prefisso
+            name = Regex.Replace(name, @"[\s_\-\.]+\d+$", "");       // suffisso
+        }
+
+        int digits = _padZero ? total.ToString().Length : 1;
+        string number = index.ToString().PadLeft(digits, '0');
+
+        return _position == Position.Suffix
+            ? $"{name}{_separator}{number}"
+            : $"{number}{_separator}{name}";
+    }
+
+    void OnGUI()
+    {
+        EditorGUILayout.Space(6);
+        EditorGUILayout.LabelField("Numerazione oggetti", EditorStyles.boldLabel);
+        EditorGUILayout.Space(4);
+
+        _position  = (Position)EditorGUILayout.EnumPopup("Posizione numero", _position);
+        _separator = EditorGUILayout.TextField("Separatore", _separator);
+        _startIndex = EditorGUILayout.IntField("Indice iniziale", _startIndex);
+        _padZero   = EditorGUILayout.Toggle("Padding con zero (01, 02…)", _padZero);
+        _stripExisting = EditorGUILayout.Toggle("Rimuovi numerazione esistente", _stripExisting);
+
+        EditorGUILayout.Space(8);
+
+        var names = SourceNames();
+        int total = _startIndex + names.Count - 1;
+
+        // Anteprima risultato
+        EditorGUILayout.LabelField("Anteprima:", EditorStyles.boldLabel);
+        _scroll = EditorGUILayout.BeginScrollView(_scroll, GUILayout.Height(150));
+        for (int i = 0; i < names.Count; i++)
+        {
+            string newName = BuildNumbered(names[i], _startIndex + i, total);
+            EditorGUILayout.LabelField($"  {names[i]}  →  {newName}");
+        }
+        EditorGUILayout.EndScrollView();
+
+        EditorGUILayout.Space(8);
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Applica", GUILayout.Height(30))) { Apply(names, total); Close(); }
+        if (GUILayout.Button("Annulla", GUILayout.Height(30))) Close();
+        EditorGUILayout.EndHorizontal();
+    }
+
+    void Apply(List<string> names, int total)
+    {
+        if (_gos != null && _gos.Count > 0)
+        {
+            Undo.RecordObjects(_gos.Cast<Object>().ToArray(), "Numera GameObject");
+            for (int i = 0; i < _gos.Count; i++)
+                _gos[i].name = BuildNumbered(names[i], _startIndex + i, total);
+        }
+        else if (_assets != null && _assets.Count > 0)
+        {
+            AssetDatabase.StartAssetEditing();
+            try
+            {
+                for (int i = 0; i < _assets.Count; i++)
+                {
+                    string newName = BuildNumbered(names[i], _startIndex + i, total);
+                    string err = AssetDatabase.RenameAsset(_assets[i], newName);
+                    if (!string.IsNullOrEmpty(err)) Debug.LogWarning($"[AssetManager] {_assets[i]}: {err}");
+                }
+            }
+            finally { AssetDatabase.StopAssetEditing(); AssetDatabase.Refresh(); }
+        }
+    }
 }
