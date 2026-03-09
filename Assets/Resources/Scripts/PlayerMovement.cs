@@ -80,30 +80,48 @@ public class PlayerMovement : MonoBehaviour
 
     void Shoot()
     {
-        if (!weaponAmmo.CanShoot())
+        if (!weaponAmmo.CanShoot()) return;
+        weaponAmmo.Shoot();
+
+        Vector3 torsoPosition = transform.position + Vector3.up * 1f;
+
+        int playerLayer = LayerMask.NameToLayer("Player");
+        int mask = ~(1 << playerLayer);
+
+        // Controlla se la pistola è oltre un ostacolo
+        Vector3 dirToGun = (shootOrigin.position - torsoPosition).normalized;
+        float distToGun = Vector3.Distance(torsoPosition, shootOrigin.position);
+
+        RaycastHit wallCheck;
+        if (Physics.Raycast(torsoPosition, dirToGun, out wallCheck, distToGun, mask))
         {
-            Debug.Log("Caricatore vuoto!");
+            Debug.Log($"Pistola oltre ostacolo: {wallCheck.collider.gameObject.name}, sparo bloccato");
+            Debug.DrawRay(torsoPosition, dirToGun * distToGun, Color.yellow, 2f); // giallo = bloccato
             return;
         }
 
-        weaponAmmo.Shoot();
+        Debug.DrawRay(torsoPosition, dirToGun * distToGun, Color.cyan, 2f); // ciano = pistola ok
 
+        // Sparo normale
         Ray ray = new Ray(shootOrigin.position, playerModel.forward);
-        RaycastHit hit;
+        RaycastHit[] hits = Physics.RaycastAll(ray, 100f);
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
-        int playerLayer = LayerMask.GetMask("Player");
-        int mask = ~playerLayer;
+        foreach (var h in hits)
+        {
+            if (h.collider.gameObject.layer == playerLayer) continue;
 
-        if (Physics.Raycast(ray, out hit, 100f, mask))
-        {
-            Debug.Log($"Colpito: {hit.collider.gameObject.name}");
-            Debug.DrawRay(shootOrigin.position, playerModel.forward * hit.distance, Color.red, 2f);
-            ZombieController zombie = hit.collider.GetComponentInParent<ZombieController>();
-            if (zombie != null) zombie.TakeDamage(1);
-        }
-        else
-        {
-            Debug.DrawRay(shootOrigin.position, playerModel.forward * 100f, Color.green, 2f);
+            ZombieController zombie = h.collider.GetComponentInParent<ZombieController>();
+            if (zombie != null)
+            {
+                Debug.DrawRay(shootOrigin.position, playerModel.forward * h.distance, Color.red, 2f); // rosso = zombie colpito
+                zombie.TakeDamage(1);
+            }
+            else
+            {
+                Debug.DrawRay(shootOrigin.position, playerModel.forward * h.distance, Color.green, 2f); // verde = ostacolo
+            }
+            break;
         }
     }
 
