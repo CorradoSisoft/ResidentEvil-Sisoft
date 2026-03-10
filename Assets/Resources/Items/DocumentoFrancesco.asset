@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9588753228ca29b4a9d89f1e795d235f, type: 3}
-  m_Name: Manuale Operativo FBI
+  m_Name: DocumentoFrancesco
   m_EditorClassIdentifier: 
-  itemName: Manuale Operativo FBI
+  itemName: DocumentoFrancesco
   icon: {fileID: 21300000, guid: e97188291df3a184caa623a9cac993bd, type: 3}
-  description: "Federal BetAciCatena Investigation\nBenvenuto, Agente LEONardi.\n\nDurante
-    le operazioni \xE8 fondamentale mantenere controllo totale della situazione lavorativa.\nProcedure
-    di comando:\n___________________\nW A S D \u2013 Muoversi | E \u2013 Interagire\nQ
-    - inventario\nR - Ricaricare l'arma\nMOUSE SX - MIRA\nMOUSE DX - SPARA"
+  description: "Registro Tecnico \u2013 Sisoft s.r.l.\nAutore: Francesco\n\nOggi
+    Corrado mi ha chiesto di controllare i server.\nAbbiamo trovato file protetti
+    che nessuno di noi aveva creato.\n\nIl nome della cartella era strano:\nU.M.B.R.\n\nEnrico
+    ha detto di non preoccuparci.\nMa il sistema continua a generare processi sconosciuti."
   itemType: 0
   keyId: 

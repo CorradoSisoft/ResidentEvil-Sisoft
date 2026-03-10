@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9588753228ca29b4a9d89f1e795d235f, type: 3}
-  m_Name: Manuale Operativo FBI
+  m_Name: DocumentoEnrico
   m_EditorClassIdentifier: 
-  itemName: Manuale Operativo FBI
+  itemName: DocumentoEnrico
   icon: {fileID: 21300000, guid: e97188291df3a184caa623a9cac993bd, type: 3}
-  description: "Federal BetAciCatena Investigation\nBenvenuto, Agente LEONardi.\n\nDurante
-    le operazioni \xE8 fondamentale mantenere controllo totale della situazione lavorativa.\nProcedure
-    di comando:\n___________________\nW A S D \u2013 Muoversi | E \u2013 Interagire\nQ
-    - inventario\nR - Ricaricare l'arma\nMOUSE SX - MIRA\nMOUSE DX - SPARA"
+  description: "Appunti Riservati \u2013 Enrico\n\nIl trasferimento dati verso Umbrella
+    \xE8 quasi completo.\nLa Sisoft \xE8 stata una copertura perfetta.\n\nFrancesco
+    e Corrado non devono scoprire nulla.\n\nDomani riceveremo il pacchetto biologico.\n\nDobbiamo
+    solo conservarlo fino al ritiro."
   itemType: 0
   keyId: 

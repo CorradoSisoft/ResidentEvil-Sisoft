@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9588753228ca29b4a9d89f1e795d235f, type: 3}
-  m_Name: Manuale Operativo FBI
+  m_Name: DocumentoCorrado
   m_EditorClassIdentifier: 
-  itemName: Manuale Operativo FBI
+  itemName: DocumentoCorrado
   icon: {fileID: 21300000, guid: e97188291df3a184caa623a9cac993bd, type: 3}
-  description: "Federal BetAciCatena Investigation\nBenvenuto, Agente LEONardi.\n\nDurante
-    le operazioni \xE8 fondamentale mantenere controllo totale della situazione lavorativa.\nProcedure
-    di comando:\n___________________\nW A S D \u2013 Muoversi | E \u2013 Interagire\nQ
-    - inventario\nR - Ricaricare l'arma\nMOUSE SX - MIRA\nMOUSE DX - SPARA"
+  description: "Data: 9 Marzo 2026\nSe stai leggendo questo\u2026 significa che tutto
+    \xE8 perduto.\n\nLa Sisoft \xE8 caduta.\nFrancesco, Enrico, Anna Maria\u2026
+    tutti\u2026 trasformati.\n\nIo\u2026 non ce l\u2019ho fatta a salvarmi.\n\nSalvo\u2026
+    se arrivi fino a qui\u2026\nper favore\u2026 d\xEC a D. che l\u2019ho amata tanto.\n\nNon
+    lasciare che questo orrore lasci queste mura."
   itemType: 0
   keyId: 

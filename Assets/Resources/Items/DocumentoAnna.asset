@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9588753228ca29b4a9d89f1e795d235f, type: 3}
-  m_Name: Manuale Operativo FBI
+  m_Name: DocumentoAnna
   m_EditorClassIdentifier: 
-  itemName: Manuale Operativo FBI
+  itemName: DocumentoAnna
   icon: {fileID: 21300000, guid: e97188291df3a184caa623a9cac993bd, type: 3}
-  description: "Federal BetAciCatena Investigation\nBenvenuto, Agente LEONardi.\n\nDurante
-    le operazioni \xE8 fondamentale mantenere controllo totale della situazione lavorativa.\nProcedure
-    di comando:\n___________________\nW A S D \u2013 Muoversi | E \u2013 Interagire\nQ
-    - inventario\nR - Ricaricare l'arma\nMOUSE SX - MIRA\nMOUSE DX - SPARA"
+  description: "Autore: Anna Maria Coco\n\nEnrico dice che Umbrella pagher\xE0 bene
+    per questo lavoro.\n\nNon capisco bene cosa contenga il contenitore arrivato
+    oggi.\n\nMa quando Corrado ha provato ad accedere alla sala server\nEnrico si
+    \xE8 arrabbiato molto.\n\nPoco dopo\u2026 qualcosa ha iniziato a urlare nel corridoio."
   itemType: 0
   keyId: 
