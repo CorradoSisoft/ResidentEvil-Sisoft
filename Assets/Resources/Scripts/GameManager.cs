@@ -31,4 +31,18 @@ public class GameManager : MonoBehaviour
     {
         return flags.ContainsKey(flag) && flags[flag];
     }
+
+    public List<string> GetAllFlags()
+    {
+        var list = new List<string>();
+        foreach (var kvp in flags)
+            if (kvp.Value) list.Add(kvp.Key);
+        return list;
+    }
+
+    public void RestoreFlags(List<string> flagList)
+    {
+        foreach (var flag in flagList)
+            flags[flag] = true;
+    }
 }

@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 788a8e389e31d9242b89863a60fdc17f, type: 3}
+  m_Script: {fileID: 11500000, guid: 7f37954bd34ce354d8901857a59326aa, type: 3}
   m_Name: IntroSequence
   m_EditorClassIdentifier: 
-  sequenceName: introGame
+  sequenceName: Intro
   completionFlag: 
   lines:
-  - text: 
+  - text: "- Resident Evil: Sisoft - \n\nby CorryWestSide"
     image: {fileID: 0}
-    textSize: 0
-    fadeSpeed: 0
-    lineDelay: 0
+    textSize: 20
+    fadeSpeed: 1
+    lineDelay: 2
