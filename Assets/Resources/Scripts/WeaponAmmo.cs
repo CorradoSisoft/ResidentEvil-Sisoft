@@ -40,7 +40,7 @@ public class WeaponAmmo : MonoBehaviour
         UpdateAmmoUI();
     }
 
-    void UpdateAmmoUI()
+    public void UpdateAmmoUI()
     {
         ammoInfo.text = ammoInMagazine + " / " + totalAmmo;
     }

@@ -131,4 +131,12 @@ public class InventoryManager : MonoBehaviour
             }
         }
     }
+
+    public ItemData GetKeyById(string keyId)
+    {
+        foreach (var item in items)
+            if (item != null && item.itemType == ItemType.Key && item.keyId == keyId)
+                return item;
+        return null;
+    }
 }

@@ -5,6 +5,7 @@ public class Door : MonoBehaviour, IInteragibile
 {
     [Header("Impostazioni")]
     public bool requiresKey = false;
+    public string requiredKeyId; // deve corrispondere a ItemData.keyId
     public float openAngle = 90f;
     public float openSpeed = 0.5f;
 
@@ -17,8 +18,17 @@ public class Door : MonoBehaviour, IInteragibile
 
         if (requiresKey)
         {
-            Debug.Log("Serve una chiave!");
-            return;
+            // Cerca la chiave giusta nell'inventario
+            ItemData key = InventoryManager.Instance.GetKeyById(requiredKeyId);
+            if (key == null)
+            {
+                Debug.Log("Serve una chiave!");
+                return;
+            }
+
+            // Usa e rimuovi la chiave
+            InventoryManager.Instance.RemoveItem(key);
+            Debug.Log($"Porta aperta con: {key.itemName}");
         }
 
         StartCoroutine(OpenDoor());
@@ -30,7 +40,15 @@ public class Door : MonoBehaviour, IInteragibile
 
         if (requiresKey)
         {
-            if (hintChiave != null) hintChiave.SetActive(true);
+            bool hasKey = InventoryManager.Instance.GetKeyById(requiredKeyId) != null;
+            if (hasKey)
+            {
+                if (hintInteract != null) hintInteract.SetActive(true); // "Premi E"
+            }
+            else
+            {
+                if (hintChiave != null) hintChiave.SetActive(true); // "Serve una chiave"
+            }
         }
         else
         {
