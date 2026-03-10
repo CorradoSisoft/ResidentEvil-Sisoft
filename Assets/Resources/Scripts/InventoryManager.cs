@@ -16,6 +16,9 @@ public class InventoryManager : MonoBehaviour
     public int columns = 2; // 2 colonne, 3 righe
     public int rows = 3;
 
+    [Header("Slot")]
+    public Color emptySlotColor = new Color(1, 1, 1, 0.2f); // colore slot vuoto
+
     private ItemData[] items;
     private int slotCount;
     private bool isOpen = false;
@@ -125,7 +128,7 @@ public class InventoryManager : MonoBehaviour
             {
                 items[i] = null;
                 slots[i].sprite = null;
-                slots[i].color = new Color(1, 1, 1, 0);
+                slots[i].color = emptySlotColor; // ← torna al colore originale
                 if (selectedIndex == i) descriptionText.text = "";
                 return;
             }

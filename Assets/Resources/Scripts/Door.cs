@@ -12,13 +12,17 @@ public class Door : MonoBehaviour, IInteragibile
     private bool isOpen = false;
     private bool isAnimating = false;
 
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip openSound;      // suono porta
+    public AudioClip voiceSound;     // voce personaggio
+
     public void Interagisci()
     {
         if (isOpen || isAnimating) return;
 
         if (requiresKey)
         {
-            // Cerca la chiave giusta nell'inventario
             ItemData key = InventoryManager.Instance.GetKeyById(requiredKeyId);
             if (key == null)
             {
@@ -26,9 +30,14 @@ public class Door : MonoBehaviour, IInteragibile
                 return;
             }
 
-            // Usa e rimuovi la chiave
             InventoryManager.Instance.RemoveItem(key);
-            Debug.Log($"Porta aperta con: {key.itemName}");
+            Debug.Log("Porta aperta!");
+
+            if (audioSource != null)
+            {
+                if (voiceSound != null) audioSource.PlayOneShot(voiceSound);
+                if (openSound != null) audioSource.PlayOneShot(openSound);
+            }
         }
 
         StartCoroutine(OpenDoor());
