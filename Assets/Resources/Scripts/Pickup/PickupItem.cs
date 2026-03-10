@@ -13,6 +13,10 @@ public class PickupItem : MonoBehaviour, IInteragibile
             SaveableObject saveable = GetComponent<SaveableObject>();
             if (saveable != null)
                 SaveManager.Instance.RegisterDestroyed(saveable.uniqueID);
+
+            // Apre l'inventario automaticamente
+            InventoryManager.Instance.OpenInventory();
+
             Destroy(gameObject);
         }
     }

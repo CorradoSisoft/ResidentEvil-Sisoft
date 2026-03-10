@@ -10,4 +10,11 @@ public class ItemData : ScriptableObject
     [TextArea(3, 8)] public string description;
     public ItemType itemType = ItemType.Generic;
     public string keyId; // es. "key_room1" — deve corrispondere alla porta
+
+    void OnValidate()
+    {
+        // Rimuove spazi iniziali e finali automaticamente
+        itemName = itemName.Trim();
+        keyId = keyId.Trim();
+    }
 }

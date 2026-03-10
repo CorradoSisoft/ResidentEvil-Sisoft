@@ -107,9 +107,9 @@ public class SaveManager : MonoBehaviour
         InventoryManager.Instance.ClearInventory();
         foreach (var itemName in data.inventoryItemNames)
         {
-            ItemData item = Resources.Load<ItemData>($"Items/{itemName}");
+            Debug.Log($"Cerco item: '{itemName}'");
+            ItemData item = Resources.Load<ItemData>($"Items/{itemName.Trim()}");
             if (item != null) InventoryManager.Instance.AddItem(item);
-            else Debug.LogWarning($"[SaveManager] Item non trovato: Items/{itemName}");
         }
 
         // Zombie morti

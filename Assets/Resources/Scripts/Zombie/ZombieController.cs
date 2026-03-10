@@ -30,6 +30,18 @@ public class ZombieController : MonoBehaviour
 
     private float lastAttackTime = 0f;
 
+    [Header("Audio")]
+    public AudioSource zombieAudio;
+    public AudioClip aggroSound;    // verso quando vede il player
+    public AudioClip attackSound;   // verso quando attacca
+    public AudioClip deathSound;    // verso quando muore
+
+    [Header("Footsteps")]
+    public AudioSource footstepAudio;
+    public AudioClip footstepSound;
+    public float stepDelay = 0.6f;
+    private float stepTimer = 0f;
+
     private Rigidbody rb;
     private Transform player;
     private bool isDead = false;
@@ -53,11 +65,34 @@ public class ZombieController : MonoBehaviour
     {
         if (isDead || player == null) return;
 
-        if (CanSeePlayer())
+        bool canSee = CanSeePlayer();
+
+        if (canSee && !hasSeenPlayer)
+        {
             hasSeenPlayer = true;
+            // Aggro sound — solo la prima volta che lo vede
+            if (zombieAudio != null && aggroSound != null)
+                zombieAudio.PlayOneShot(aggroSound);
+        }
 
         UpdateAnimator();
         RotateModel();
+    }
+
+    bool CanSeePlayer()
+    {
+        Vector3 directionToPlayer = player.position - transform.position;
+        float distance = directionToPlayer.magnitude;
+
+        if (distance > detectionRange) return false;
+
+        float angle = Vector3.Angle(zombieModel.forward, directionToPlayer);
+        if (angle > fieldOfView / 2f) return false;
+
+        if (Physics.Raycast(transform.position + Vector3.up, directionToPlayer.normalized, distance, obstacleMask))
+            return false;
+
+        return true;
     }
 
     void FixedUpdate()
@@ -71,42 +106,41 @@ public class ZombieController : MonoBehaviour
             if (distanceToPlayer <= attackRange)
                 TryAttack();
             else
+            {
                 ChasePlayer();
+                HandleFootsteps();
+            }
+        }
+    }
+
+    void HandleFootsteps()
+    {
+        stepTimer -= Time.fixedDeltaTime;
+        if (stepTimer <= 0f)
+        {
+            if (footstepAudio != null && footstepSound != null)
+            {
+                footstepAudio.pitch = Random.Range(0.85f, 1.15f);
+                footstepAudio.PlayOneShot(footstepSound);
+            }
+            stepTimer = stepDelay;
         }
     }
 
     void TryAttack()
     {
-        // Fermo quando attacca
         rb.linearVelocity = Vector3.zero;
-
         if (Time.time - lastAttackTime < attackCooldown) return;
-
         lastAttackTime = Time.time;
+
+        if (zombieAudio != null && attackSound != null)
+            zombieAudio.PlayOneShot(attackSound);
 
         PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
         if (playerHealth != null)
             playerHealth.TakeDamage(attackDamage);
-
-        Debug.Log($"Zombie attacca! Danno: {attackDamage}");
     }
 
-    bool CanSeePlayer()
-    {
-        Vector3 directionToPlayer = player.position - transform.position;
-        float distance = directionToPlayer.magnitude;
-
-        if (distance > detectionRange) return false;
-
-        float angle = Vector3.Angle(zombieModel.forward, directionToPlayer);
-        if (angle > fieldOfView / 2f) return false;
-
-        // Controlla se c'è un muro in mezzo
-        if (Physics.Raycast(transform.position + Vector3.up, directionToPlayer.normalized, distance, obstacleMask))
-            return false;
-
-        return true;
-    }
 
     void ChasePlayer()
     {
@@ -141,7 +175,7 @@ public class ZombieController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (isDead) return;
-        
+        hasSeenPlayer = true;
         health -= damage;
         if (health <= 0)
             Die();
@@ -155,6 +189,9 @@ public class ZombieController : MonoBehaviour
         GetComponent<Collider>().enabled = false;
         animator.SetBool("isWalking", false);
         animator.SetBool("isDeath", true);
+
+        if (zombieAudio != null && deathSound != null)
+            zombieAudio.PlayOneShot(deathSound);
 
         StartCoroutine(SpawnBloodDelayed());
     }

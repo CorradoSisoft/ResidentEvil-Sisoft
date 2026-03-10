@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9588753228ca29b4a9d89f1e795d235f, type: 3}
+  m_Name: Manuale Operativo FBI
+  m_EditorClassIdentifier: 
+  itemName: 'Manuale Operativo FBI '
+  icon: {fileID: 21300000, guid: e97188291df3a184caa623a9cac993bd, type: 3}
+  description: "<b>Manuale Operativo FBI </b>\nFederal BetAciCatena Investigation\nBenvenuto,
+    Agente LEONardi.\n\nDurante le operazioni \xE8 fondamentale mantenere controllo
+    totale della situazione lavorativa.\nProcedure di comando:\n___________________\nW
+    A S D \u2013 Muoversi | E \u2013 Interagire\nQ - inventario\nR - Ricaricare l'arma\nMOUSE
+    SX - MIRA\nMOUSE DX - SPARA"
+  itemType: 0
+  keyId: 

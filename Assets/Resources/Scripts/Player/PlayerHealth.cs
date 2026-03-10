@@ -18,6 +18,15 @@ public class PlayerHealth : MonoBehaviour
     [Header("Heal Feedback")]
     public UnityEngine.UI.Image healOverlay;
     public float healFlashDuration = 0.5f;
+
+    [Header("Portraits")]
+    public Image portrait;            // L'Image UI del portrait
+    public Sprite[] healthPortraits;  // 0 = verde, 1 = giallo, 2 = rosso
+
+    [Header("Voice")]
+    public AudioSource voiceAudio;
+    public AudioClip[] damageSounds;
+    public AudioClip[] healSounds;
     
     // Soglie (usate anche da ECGRenderer)
     public const float YELLOW_THRESHOLD = 0.6f;
@@ -46,6 +55,14 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
         OnHealthChanged?.Invoke();
+        UpdatePortrait(); // Aggiorna il portrait
+
+        // Voce danno
+        if (voiceAudio != null && damageSounds.Length > 0)
+        {
+            AudioClip clip = damageSounds[Random.Range(0, damageSounds.Length)];
+            voiceAudio.PlayOneShot(clip);
+        }
         
         // Flash rosso
         if (damageOverlay != null)
@@ -61,6 +78,13 @@ public class PlayerHealth : MonoBehaviour
     {
         // Appare subito
         damageOverlay.color = new Color(1, 0, 0, 0.4f);
+
+        // Voce cura
+        if (voiceAudio != null && healSounds.Length > 0)
+        {
+            AudioClip clip = healSounds[Random.Range(0, healSounds.Length)];
+            voiceAudio.PlayOneShot(clip);
+        }
 
         // Svanisce gradualmente
         float elapsed = 0f;
@@ -79,6 +103,7 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
         OnHealthChanged?.Invoke();
+        UpdatePortrait(); // Aggiorna il portrait
 
         if (healOverlay != null)
         {
@@ -99,6 +124,18 @@ public class PlayerHealth : MonoBehaviour
             yield return null;
         }
         healOverlay.color = new Color(0, 1, 0, 0f);
+    }
+
+    void UpdatePortrait()
+    {
+        float ratio = GetRatio();
+
+        if (ratio > YELLOW_THRESHOLD)        // Verde
+            portrait.sprite = healthPortraits[0];
+        else if (ratio > RED_THRESHOLD)      // Giallo
+            portrait.sprite = healthPortraits[1];
+        else                                 // Rosso
+            portrait.sprite = healthPortraits[2];
     }
 
     public float GetRatio() => (float)currentHealth / maxHealth;

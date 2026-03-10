@@ -170,4 +170,15 @@ public class InventoryManager : MonoBehaviour
                 return item;
         return null;
     }
+
+    public void OpenInventory()
+    {
+        if (isOpen) return;
+        isOpen = true;
+        inventoryPanel.SetActive(true);
+        Time.timeScale = 0f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        MoveCursor(selectedIndex);
+    }
 }

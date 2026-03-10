@@ -20,3 +20,63 @@ MonoBehaviour:
     textSize: 20
     fadeSpeed: 1
     lineDelay: 2
+  - text: 9 Marzo 2026
+    image: {fileID: 0}
+    textSize: 20
+    fadeSpeed: 1
+    lineDelay: 2
+  - text: 'Mi chiamo Salvatore Leonardi, ma tutti mi chiamano Leon.
+
+      Agente
+      FBI.'
+    image: {fileID: 0}
+    textSize: 20
+    fadeSpeed: 1
+    lineDelay: 2
+  - text: Questa mattina ho ricevuto un messaggio disperato
+    image: {fileID: 0}
+    textSize: 20
+    fadeSpeed: 1
+    lineDelay: 2
+  - text: "\u201CPerdonami\u2026 ho fallito\u2026 nel luogo delle perdute speranze.\u201D"
+    image: {fileID: 0}
+    textSize: 20
+    fadeSpeed: 1
+    lineDelay: 2
+  - text: "Sapevo che era in pericolo. Il mio amico\u2026 ha bisogno di me."
+    image: {fileID: 0}
+    textSize: 20
+    fadeSpeed: 1
+    lineDelay: 2
+  - text: 'Quando varco la soglia della Sisoft s.r.l., qualcosa non va.
+
+'
+    image: {fileID: 0}
+    textSize: 20
+    fadeSpeed: 1
+    lineDelay: 2
+  - text: "Il silenzio \xE8 assordante. Le luci tremolano, "
+    image: {fileID: 0}
+    textSize: 20
+    fadeSpeed: 1
+    lineDelay: 2
+  - text: "scricchiolano i pavimenti, e l\u2019aria \xE8 greve di ferro e morte."
+    image: {fileID: 0}
+    textSize: 20
+    fadeSpeed: 1
+    lineDelay: 2
+  - text: "Qualcuno\u2026 o qualcosa\u2026 si nasconde tra queste mura."
+    image: {fileID: 0}
+    textSize: 20
+    fadeSpeed: 1
+    lineDelay: 2
+  - text: "E io devo scoprire cosa \xE8 successo\u2026 prima che sia troppo tardi."
+    image: {fileID: 0}
+    textSize: 20
+    fadeSpeed: 1
+    lineDelay: 2
+  - text: 
+    image: {fileID: 0}
+    textSize: 20
+    fadeSpeed: 1
+    lineDelay: 2

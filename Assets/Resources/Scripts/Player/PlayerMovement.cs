@@ -20,6 +20,24 @@ public class PlayerMovement : MonoBehaviour
     public Transform shootOrigin; // Trascina qui l'empty GameObject
     public WeaponAmmo weaponAmmo;
 
+    [Header("Footsteps")]
+    public AudioSource footstepAudio;
+    public AudioClip footstepSound;
+    public float stepDelay = 0.5f;
+    private float stepTimer = 0f;
+    private bool wasMoving = false;
+
+    [Header("Weapon Audio")]
+    public AudioSource weaponAudio;
+    public AudioClip shootSound;
+    public AudioClip emptySound;
+    public AudioClip reloadSound;
+
+    [Header("Voice")]
+    public AudioSource voiceAudio;
+    public AudioClip[] damageSounds;  // frasi quando prende danno
+    public AudioClip[] healSounds;    // frasi quando si cura
+
     private Rigidbody rb;
     private float currentCameraDistance;
     private bool isShooting = false;
@@ -34,8 +52,13 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Blocca tutto se pausa o inventario aperti
         if (PauseMenu.IsPaused || InventoryManager.Instance.IsOpen) return;
+
+        float horizontal = Input.GetAxisRaw("Horizontal"); // ← Raw
+        float vertical = Input.GetAxisRaw("Vertical");     // ← Raw
+        Vector3 movement = new Vector3(horizontal, 0f, vertical).normalized;
+
+        HandleFootsteps();
 
         HandleShootingInput();
         RotateModel();
@@ -79,13 +102,25 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             weaponAmmo.Reload();
+            if (weaponAudio != null && reloadSound != null)
+                weaponAudio.PlayOneShot(reloadSound);
         }
     }
 
     void Shoot()
     {
-        if (!weaponAmmo.CanShoot()) return;
+        if (!weaponAmmo.CanShoot())
+        {
+            // Pistola scarica
+            if (weaponAudio != null && emptySound != null)
+                weaponAudio.PlayOneShot(emptySound);
+            return;
+        }
         weaponAmmo.Shoot();
+
+        // Suono sparo
+        if (weaponAudio != null && shootSound != null)
+            weaponAudio.PlayOneShot(shootSound);
 
         Vector3 torsoPosition = transform.position + Vector3.up * 1f;
 
@@ -119,6 +154,12 @@ public class PlayerMovement : MonoBehaviour
             if (h.collider.CompareTag("Barra"))
             {
                 Debug.DrawRay(shootOrigin.position, playerModel.forward * h.distance, Color.yellow, 2f);
+                
+                // Registra la distruzione prima di distruggere
+                SaveableObject saveable = h.collider.GetComponent<SaveableObject>();
+                if (saveable != null)
+                    SaveManager.Instance.RegisterDestroyed(saveable.uniqueID);
+                
                 Destroy(h.collider.gameObject);
                 break;
             }
@@ -154,11 +195,40 @@ public class PlayerMovement : MonoBehaviour
 
         if (isShooting) return; // Fermo mentre spara
 
-        bool isRunning = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-        float currentSpeed = isRunning ? speed * runMultiplier : speed;
+        //il running lo uso io solo di test
+        bool isRunning = false; //Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        float currentSpeed = isRunning ? speed * runMultiplier : speed; 
 
         rb.MovePosition(rb.position + movement * currentSpeed * Time.fixedDeltaTime);
         playerModel.localPosition = Vector3.zero;
+    }
+
+
+    void HandleFootsteps()
+    {
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        bool isMoving = (h != 0 || v != 0) && !isShooting;
+
+        if (isMoving)
+        {
+            stepTimer -= Time.deltaTime;
+            if (stepTimer <= 0f)
+            {
+                if (footstepAudio != null && footstepSound != null)
+                {
+                    footstepAudio.pitch = Random.Range(0.9f, 1.1f);
+                    footstepAudio.PlayOneShot(footstepSound);
+                }
+                stepTimer = stepDelay;
+            }
+        }
+        else
+        {
+            stepTimer = stepDelay; // reset immediato
+        }
+
+        wasMoving = isMoving;
     }
 
     void RotateModel()
@@ -188,11 +258,11 @@ public class PlayerMovement : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
         Vector3 movement = new Vector3(horizontal, 0f, vertical).normalized;
-        bool isRunning = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        bool isRunning = false ; //Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
         animator.SetBool("isShooting", isShooting);
         animator.SetBool("isWalking", movement.magnitude > 0 && !isRunning && !isShooting);
-        animator.SetBool("isRunning", isRunning && movement.magnitude > 0 && !isShooting);
+        /* animator.SetBool("isRunning", isRunning && movement.magnitude > 0 && !isShooting); */
     }
 
     void CameraFollow()
