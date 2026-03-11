@@ -28,13 +28,16 @@ public class MainMenu : MonoBehaviour
         FadeManager.Instance.SetFadeInstant(0f);
         GameManager.Instance.SetState(GameState.MainMenu);
 
-        // Mostra Continua solo se esiste un salvataggio
         if (continuaButton != null)
+        {
             continuaButton.SetActive(SaveManager.Instance.SaveExists());
-
-        MenuCursor menuCursor = FindObjectOfType<MenuCursor>();
-        if (menuCursor != null)
-            menuCursor.menuItemsCount = SaveManager.Instance.SaveExists() ? 3 : 2;
+            MenuCursor menuCursor = FindObjectOfType<MenuCursor>();
+            if (menuCursor != null)
+            {
+                menuCursor.menuItemsCount = SaveManager.Instance.SaveExists() ? 3 : 2;
+                menuCursor.RebuildLayout(); // ← riposiziona i pulsanti
+            }
+        }
     }
 
     public void Play()

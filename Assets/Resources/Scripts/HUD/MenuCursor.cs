@@ -27,7 +27,7 @@ public class MenuCursor : MonoBehaviour
 
     private RectTransform childRect;
 
-    void Start()
+    void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         initialPosition = rectTransform.anchoredPosition;
@@ -40,6 +40,34 @@ public class MenuCursor : MonoBehaviour
         Levitate();
     }
 
+    public void RebuildLayout()
+    {
+        // Crea lista dei soli pulsanti visibili
+        var visibleButtons = new System.Collections.Generic.List<Button>();
+        
+        for (int i = 0; i < menuButtons.Length; i++)
+        {
+            if (menuButtons[i] == null) continue;
+            if (!menuButtons[i].gameObject.activeSelf) continue;
+            visibleButtons.Add(menuButtons[i]);
+        }
+
+        // Riposiziona
+        for (int i = 0; i < visibleButtons.Count; i++)
+        {
+            RectTransform rt = visibleButtons[i].GetComponent<RectTransform>();
+            if (!useHorizontal)
+                rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, initialPosition.y - (offsetY * i));
+            else
+                rt.anchoredPosition = new Vector2(initialPosition.x + (offsetX * i), rt.anchoredPosition.y);
+        }
+
+        // Aggiorna l'array con solo i pulsanti visibili
+        menuButtons = visibleButtons.ToArray();
+        menuItemsCount = menuButtons.Length;
+        currentIndex = 0;
+    }
+    
     private void HandleInput()
     {
         if (!useHorizontal)

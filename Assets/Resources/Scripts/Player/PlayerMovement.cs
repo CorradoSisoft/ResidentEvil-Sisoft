@@ -183,23 +183,26 @@ public class PlayerMovement : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        // Se si muove, disattiva shooting
         Vector3 movement = new Vector3(horizontal, 0f, vertical).normalized;
+
         if (movement.magnitude > 0)
         {
             isShooting = false;
-            animator.SetBool("isShooting", false); // Anche qui immediato
+            animator.SetBool("isShooting", false);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
 
-        if (isShooting) return; // Fermo mentre spara
+        if (isShooting) return;
 
-        //il running lo uso io solo di test
-        bool isRunning = false; //Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-        float currentSpeed = isRunning ? speed * runMultiplier : speed; 
+        bool isRunning = false;
+        float currentSpeed = isRunning ? speed * runMultiplier : speed;
 
-        rb.MovePosition(rb.position + movement * currentSpeed * Time.fixedDeltaTime);
+        // Usa velocity invece di MovePosition
+        Vector3 targetVelocity = movement * currentSpeed;
+        targetVelocity.y = rb.linearVelocity.y; // mantieni la gravità
+        rb.linearVelocity = targetVelocity;
+
         playerModel.localPosition = Vector3.zero;
     }
 

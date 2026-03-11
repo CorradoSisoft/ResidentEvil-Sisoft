@@ -14,6 +14,9 @@ public class InteractionManager : MonoBehaviour
 
     void Update()
     {
+        // Blocca tutto se pausa o inventario aperti
+        if (PauseMenu.IsPaused || InventoryManager.Instance.IsOpen) return;
+
         HideAllHints();
 
         // Trova l'interagibile più vicino
