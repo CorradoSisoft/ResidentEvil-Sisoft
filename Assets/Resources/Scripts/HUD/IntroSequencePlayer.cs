@@ -61,25 +61,27 @@ public class IntroSequencePlayer : MonoBehaviour
         foreach (var line in data.lines)
         {
             SetupImage(line.image);
-            introText.text = line.text;
+            introText.text = "";
             introText.fontSize = line.textSize;
 
-            // Fade in
-            yield return FadeVisuals(0f, 1f, line.fadeSpeed);
+            // Fade in immagine
+            yield return FadeImage(0f, 1f, line.fadeSpeed);
 
-            // Mostra testo — aspetta lineDelay ma skippabile con Invio
+            // Typewriter testo
+            yield return TypewriterText(line.text, line.typewriterSpeed);
+
+            // Aspetta lineDelay skippabile
             float elapsed = 0f;
             while (elapsed < line.lineDelay)
             {
                 if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-                    break; // skip
+                    break;
                 elapsed += Time.deltaTime;
                 yield return null;
             }
 
-            // Fade out
+            // Fade out tutto
             yield return FadeVisuals(1f, 0f, line.fadeSpeed);
-
             yield return new WaitForSeconds(0.5f);
         }
 
@@ -168,5 +170,45 @@ public class IntroSequencePlayer : MonoBehaviour
             imageColor.a = endAlpha;
             introImage.color = imageColor;
         }
+    }
+
+    private IEnumerator TypewriterText(string fullText, float typewriterSpeed)
+    {
+        introText.text = "";
+        introText.color = new Color(introText.color.r, introText.color.g, introText.color.b, 1f);
+
+        foreach (char c in fullText)
+        {
+            introText.text += c;
+
+            // Skip immediato con Invio — mostra tutto il testo
+            if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
+            {
+                introText.text = fullText;
+                yield break;
+            }
+
+            yield return new WaitForSeconds(typewriterSpeed);
+        }
+    }
+
+    private IEnumerator FadeImage(float startAlpha, float endAlpha, float speed)
+    {
+        if (introImage == null) yield break;
+
+        float elapsed = 0f;
+        Color imageColor = introImage.color;
+
+        while (elapsed < speed)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / speed;
+            imageColor.a = Mathf.Lerp(startAlpha, endAlpha, t);
+            introImage.color = imageColor;
+            yield return null;
+        }
+
+        imageColor.a = endAlpha;
+        introImage.color = imageColor;
     }
 }

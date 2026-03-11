@@ -18,4 +18,5 @@ public class IntroLine
     [Range(6, 72)] public float textSize = 24f;
     public float fadeSpeed = 1f;
     public float lineDelay = 2f;
+    [Range(0.01f, 0.2f)] public float typewriterSpeed = 0.05f; // ← secondi per lettera
 }

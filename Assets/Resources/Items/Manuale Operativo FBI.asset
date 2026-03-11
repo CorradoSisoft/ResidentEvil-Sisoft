@@ -17,6 +17,6 @@ MonoBehaviour:
   description: "Federal BetAciCatena Investigation\nBenvenuto, Agente LEONardi.\n\nDurante
     le operazioni \xE8 fondamentale mantenere controllo totale della situazione lavorativa.\nProcedure
     di comando:\n___________________\nW A S D \u2013 Muoversi | E \u2013 Interagire\nQ
-    - inventario\nR - Ricaricare l'arma\nMOUSE SX - MIRA\nMOUSE DX - SPARA"
+    - inventario\nR - Ricaricare l'arma\nMOUSE DX - MIRA\nMOUSE SX - SPARA"
   itemType: 0
   keyId: 

@@ -56,6 +56,10 @@ public class MenuCursor : MonoBehaviour
                     currentIndex = i;
                     PlayMoveSound();
                 }
+
+                // Click sinistro conferma
+                if (Input.GetMouseButtonDown(0))
+                    PressCurrentButton();
                 return;
             }
         }
