@@ -42,6 +42,9 @@ public class ZombieController : MonoBehaviour
     public float stepDelay = 0.6f;
     private float stepTimer = 0f;
 
+    [Header("Hit")]
+    public AudioClip hitSound;
+
     private Rigidbody rb;
     private Transform player;
     private bool isDead = false;
@@ -176,6 +179,11 @@ public class ZombieController : MonoBehaviour
     {
         if (isDead) return;
         hasSeenPlayer = true;
+
+        // Suono hit
+        if (zombieAudio != null && hitSound != null)
+            zombieAudio.PlayOneShot(hitSound);
+
         health -= damage;
         if (health <= 0)
             Die();

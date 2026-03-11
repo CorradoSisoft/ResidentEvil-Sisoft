@@ -72,6 +72,17 @@ public class PlayerMovement : MonoBehaviour
         MovementPlayer();
     }
 
+    public void OnPlayerRespawn()
+    {
+        enabled = true;
+        rb.isKinematic = false;
+        rb.linearVelocity = Vector3.zero;
+        animator.SetBool("isDeath", false);
+        isShooting = false;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     void HandleShootingInput()
     {
         if (Input.GetMouseButtonDown(1))
@@ -204,6 +215,25 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = targetVelocity;
 
         playerModel.localPosition = Vector3.zero;
+    }
+
+    public void OnPlayerDeath()
+    {
+        // Blocca input
+        enabled = false;
+
+        // Blocca movimento
+        rb.linearVelocity = Vector3.zero;
+        rb.isKinematic = true;
+
+        // Animazione morte
+        animator.SetBool("isDeath", true);
+        animator.SetBool("isWalking", false);
+        animator.SetBool("isShooting", false);
+
+        // Cursore normale
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
 

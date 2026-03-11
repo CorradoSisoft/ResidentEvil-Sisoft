@@ -5,13 +5,14 @@ public class WeaponAmmo : MonoBehaviour
 {
     public int magazineSize = 6;
     public int ammoInMagazine;
+    public int startingAmmoInMagazine = 0; // ← separato
     public int totalAmmo = 24;
 
     public TextMeshProUGUI ammoInfo;
 
     void Start()
     {
-        ammoInMagazine = magazineSize;
+        ammoInMagazine = startingAmmoInMagazine;
         UpdateAmmoUI();
     }
 
@@ -28,6 +29,7 @@ public class WeaponAmmo : MonoBehaviour
 
     public void Reload()
     {
+        Debug.Log($"Reload chiamato | inMag: {ammoInMagazine} | total: {totalAmmo}");
         if (ammoInMagazine == magazineSize) return;
         if (totalAmmo <= 0) return;
 

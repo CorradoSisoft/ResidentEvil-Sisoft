@@ -51,11 +51,11 @@ public class PlayerHealth : MonoBehaviour
         TakeDamage(testDamageAmount);
     }
 
-        public void TakeDamage(int amount)
+    public void TakeDamage(int amount)
     {
         currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
         OnHealthChanged?.Invoke();
-        UpdatePortrait(); // Aggiorna il portrait
+        UpdatePortrait();
 
         // Voce danno
         if (voiceAudio != null && damageSounds.Length > 0)
@@ -63,8 +63,7 @@ public class PlayerHealth : MonoBehaviour
             AudioClip clip = damageSounds[Random.Range(0, damageSounds.Length)];
             voiceAudio.PlayOneShot(clip);
         }
-        
-        // Flash rosso
+
         if (damageOverlay != null)
         {
             if (flashCoroutine != null) StopCoroutine(flashCoroutine);
@@ -74,19 +73,9 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth <= 0) Die();
     }
 
-    private System.Collections.IEnumerator DamageFlash()
+    private IEnumerator DamageFlash()
     {
-        // Appare subito
         damageOverlay.color = new Color(1, 0, 0, 0.4f);
-
-        // Voce cura
-        if (voiceAudio != null && healSounds.Length > 0)
-        {
-            AudioClip clip = healSounds[Random.Range(0, healSounds.Length)];
-            voiceAudio.PlayOneShot(clip);
-        }
-
-        // Svanisce gradualmente
         float elapsed = 0f;
         while (elapsed < flashDuration)
         {
@@ -95,7 +84,6 @@ public class PlayerHealth : MonoBehaviour
             damageOverlay.color = new Color(1, 0, 0, alpha);
             yield return null;
         }
-
         damageOverlay.color = new Color(1, 0, 0, 0f);
     }
 
@@ -103,7 +91,14 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
         OnHealthChanged?.Invoke();
-        UpdatePortrait(); // Aggiorna il portrait
+        UpdatePortrait();
+
+        // Voce cura — era finita in DamageFlash per errore
+        if (voiceAudio != null && healSounds.Length > 0)
+        {
+            AudioClip clip = healSounds[Random.Range(0, healSounds.Length)];
+            voiceAudio.PlayOneShot(clip);
+        }
 
         if (healOverlay != null)
         {
@@ -142,7 +137,14 @@ public class PlayerHealth : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("Player morto!");
+        GetComponent<PlayerMovement>().OnPlayerDeath();
+        StartCoroutine(DelayedGameOver());
+    }
+
+    private IEnumerator DelayedGameOver()
+    {
+        yield return new WaitForSecondsRealtime(2f);
+        GameOverManager.Instance.ShowGameOver();
     }
 
     public void NotifyHealthChanged()
