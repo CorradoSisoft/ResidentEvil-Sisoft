@@ -38,6 +38,8 @@ public class MainMenu : MonoBehaviour
                 menuCursor.RebuildLayout(); // ← riposiziona i pulsanti
             }
         }
+
+        BackgroundMusic.Instance.Stop();
     }
 
     public void Play()
@@ -69,6 +71,7 @@ public class MainMenu : MonoBehaviour
         // 3. Swap pannelli a schermo nero
         mainMenuPanel.SetActive(false);
         gameplayPanel.SetActive(true);
+        BackgroundMusic.Instance.PlayFloor();
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -109,6 +112,7 @@ public class MainMenu : MonoBehaviour
         // Swap pannelli
         mainMenuPanel.SetActive(false);
         gameplayPanel.SetActive(true);
+        BackgroundMusic.Instance.PlayFloor();
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

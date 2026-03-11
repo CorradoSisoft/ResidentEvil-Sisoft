@@ -21,4 +21,9 @@ public class SaveData
 
     // Flag GameManager
     public List<string> gameFlags = new List<string>();
+
+    public int documentsFound;
+
+    // Casseforti risolte
+    public List<string> solvedSafes = new List<string>();
 }

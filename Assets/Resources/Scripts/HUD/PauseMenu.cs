@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -11,9 +12,8 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // Non aprire pausa se inventario è aperto
             if (!IsPaused && InventoryManager.Instance.IsOpen) return;
-
+            if (!IsPaused && SafeLock.IsAnyOpen) return; // ← aggiungi qui
             if (IsPaused) Resume();
             else Pause();
         }
@@ -26,6 +26,7 @@ public class PauseMenu : MonoBehaviour
         IsPaused = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        //BackgroundMusic.Instance.Stop(); // ← ferma musica
     }
 
     public void Resume()
@@ -35,5 +36,60 @@ public class PauseMenu : MonoBehaviour
         IsPaused = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        //BackgroundMusic.Instance.PlayFloor(); // ← riprende musica
+    }
+
+    public void LoadGame()
+    {
+        StartCoroutine(LoadGameSequence());
+    }
+
+    public void BackToMenu()
+    {
+        StartCoroutine(BackToMenuSequence());
+    }
+
+    private IEnumerator LoadGameSequence()
+    {
+        IsPaused = false;
+        pauseMenuUI.SetActive(false);
+        Time.timeScale = 1f;
+
+        yield return StartCoroutine(FadeManager.Instance.FadeOutRoutine());
+
+        PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+        if (pm != null) pm.OnPlayerRespawn();
+
+        SaveManager.Instance.Load();
+
+        yield return StartCoroutine(FadeManager.Instance.FadeInRoutine());
+    }
+
+    private IEnumerator BackToMenuSequence()
+    {
+        IsPaused = false;
+        pauseMenuUI.SetActive(false);
+        Time.timeScale = 1f;
+
+        yield return StartCoroutine(FadeManager.Instance.FadeOutRoutine());
+
+        MainMenu mainMenu = FindObjectOfType<MainMenu>(true);
+        mainMenu.gameplayPanel.SetActive(false);
+        mainMenu.mainMenuPanel.SetActive(true);
+
+        Time.timeScale = 0f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        GameManager.Instance.SetState(GameState.MainMenu);
+
+        MenuCursor menuCursor = FindObjectOfType<MenuCursor>();
+        if (menuCursor != null)
+        {
+            menuCursor.enabled = true;
+            menuCursor.menuItemsCount = SaveManager.Instance.SaveExists() ? 3 : 2;
+            menuCursor.RebuildLayout();
+        }
+
+        yield return StartCoroutine(FadeManager.Instance.FadeInRoutine());
     }
 }

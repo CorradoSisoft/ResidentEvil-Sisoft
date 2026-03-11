@@ -10,6 +10,7 @@ public class InventoryManager : MonoBehaviour
     public GameObject inventoryPanel;
     public Image[] slots;
     public TextMeshProUGUI descriptionText;
+    public Image big_picture;
     public RectTransform slotCursor;
 
     [Header("Layout slot")]
@@ -54,6 +55,7 @@ public class InventoryManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             if (!isOpen && PauseMenu.IsPaused) return;
+            if (!isOpen && SafeLock.IsAnyOpen) return; // ← aggiungi qui
             ToggleInventory();
         }
 
@@ -135,9 +137,23 @@ public class InventoryManager : MonoBehaviour
             slotCursor.position = slots[index].rectTransform.position;
 
         if (items[index] != null)
+        {
             descriptionText.text = $"<b>{items[index].itemName}</b>\n{items[index].description}";
+            if (big_picture != null)
+            {
+                big_picture.sprite = items[index].icon;
+                big_picture.color = Color.white;
+            }
+        }
         else
+        {
             descriptionText.text = "";
+            if (big_picture != null)
+            {
+                big_picture.sprite = null;
+                big_picture.color = Color.clear; // nasconde l'immagine se slot vuoto
+            }
+        }
     }
 
     public bool AddItem(ItemData item)

@@ -2,12 +2,8 @@ using UnityEngine;
 
 public class SafeRoom : MonoBehaviour
 {
-    [Header("Musica")]
-    public AudioSource musicSource;
-    public AudioClip safeRoomMusic;
-
     [Header("Barriera")]
-    public GameObject barrier; // il box collider invisibile
+    public GameObject barrier;
 
     private bool playerInside = false;
 
@@ -17,14 +13,7 @@ public class SafeRoom : MonoBehaviour
         if (playerInside) return;
 
         playerInside = true;
-
-        // Musica
-        if (musicSource != null && safeRoomMusic != null)
-        {
-            musicSource.clip = safeRoomMusic;
-            musicSource.loop = true;
-            musicSource.Play();
-        }
+        BackgroundMusic.Instance.PlaySafeRoom();
     }
 
     void OnTriggerExit(Collider other)
@@ -32,10 +21,7 @@ public class SafeRoom : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         playerInside = false;
-
-        // Ferma musica quando esce
-        if (musicSource != null)
-            musicSource.Stop();
+        BackgroundMusic.Instance.PlayFloor();
     }
 
     void OnDrawGizmosSelected()

@@ -33,6 +33,6 @@ public class InterruttoreLuce : MonoBehaviour, IInteragibile
     void OnDrawGizmosSelected()
     {
         Gizmos.color = funzionante ? Color.yellow : Color.gray;
-        Gizmos.DrawWireSphere(transform.position, 3f);
+        Gizmos.DrawWireSphere(transform.position, 1.5f);
     }
 }

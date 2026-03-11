@@ -55,19 +55,50 @@ public class GameOverManager : MonoBehaviour
 
     public void LoadGame()
     {
+        StartCoroutine(LoadGameSequence());
+    }
+
+    public void BackToMenu()
+    {
+        StartCoroutine(BackToMenuSequence());
+    }
+
+    private IEnumerator LoadGameSequence()
+    {
+        // Fade in per togliere il nero
+        yield return StartCoroutine(FadeManager.Instance.FadeInRoutine());
+
         Time.timeScale = 1f;
         gameOverPanel.SetActive(false);
 
-        // Ripristina player
         PlayerMovement pm = FindObjectOfType<PlayerMovement>();
         if (pm != null) pm.OnPlayerRespawn();
 
         SaveManager.Instance.Load();
     }
 
-    public void BackToMenu()
+    private IEnumerator BackToMenuSequence()
     {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenu"); // ← nome della tua scena menu
+        yield return StartCoroutine(FadeManager.Instance.FadeInRoutine());
+
+        Time.timeScale = 0f;
+        gameOverPanel.SetActive(false);
+
+        MainMenu mainMenu = FindObjectOfType<MainMenu>(true); // true = cerca anche inattivi
+        mainMenu.gameplayPanel.SetActive(false);
+        mainMenu.mainMenuPanel.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        GameManager.Instance.SetState(GameState.MainMenu);
+
+        // Ricostruisce il menu cursor
+        MenuCursor menuCursor = FindObjectOfType<MenuCursor>();
+        if (menuCursor != null)
+        {
+            menuCursor.enabled = true;
+            menuCursor.menuItemsCount = SaveManager.Instance.SaveExists() ? 3 : 2;
+            menuCursor.RebuildLayout();
+        }
     }
 }

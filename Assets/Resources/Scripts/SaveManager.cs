@@ -7,7 +7,7 @@ public class SaveManager : MonoBehaviour
     public static SaveManager Instance;
 
     private string savePath => Application.persistentDataPath + "/save.json";
-
+    
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -60,8 +60,20 @@ public class SaveManager : MonoBehaviour
         // Stanze visitate
         data.visitedRooms = MapManager.Instance.GetVisitedRooms();
 
+        data.documentsFound = DocumentCounter.Instance.GetFound();
+
         // Flag
         data.gameFlags = GameManager.Instance.GetAllFlags();
+
+        // Casseforti risolte
+        foreach (var safe in FindObjectsOfType<SafeLock>())
+        {
+            if (safe.IsSolved)
+            {
+                string id = safe.GetComponent<SaveableObject>()?.uniqueID;
+                if (id != null) data.solvedSafes.Add(id);
+            }
+        }
 
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
@@ -139,8 +151,18 @@ public class SaveManager : MonoBehaviour
         // Stanze visitate
         MapManager.Instance.RestoreVisitedRooms(data.visitedRooms);
 
+        DocumentCounter.Instance.RestoreCount(data.documentsFound);
+
         // Flag
         GameManager.Instance.RestoreFlags(data.gameFlags);
+
+        // Casseforti risolte
+        foreach (var safe in FindObjectsOfType<SafeLock>())
+        {
+            string id = safe.GetComponent<SaveableObject>()?.uniqueID;
+            if (id != null && data.solvedSafes.Contains(id))
+                safe.SetSolved();
+        }
 
         Debug.Log("[SaveManager] Caricamento completato!");
     }

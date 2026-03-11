@@ -27,6 +27,12 @@ public class GameManager : MonoBehaviour
         flags[flag] = true;
     }
 
+    // Overload per compatibilità con i nuovi script
+    public void SetFlag(string flag, bool value)
+    {
+        flags[flag] = value;
+    }
+
     public bool GetFlag(string flag)
     {
         return flags.ContainsKey(flag) && flags[flag];

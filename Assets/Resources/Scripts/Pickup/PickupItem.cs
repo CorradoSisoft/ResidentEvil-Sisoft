@@ -9,6 +9,9 @@ public class PickupItem : MonoBehaviour, IInteragibile
     {
         if (InventoryManager.Instance.AddItem(itemData))
         {
+            if (itemData.itemType == ItemType.SpecialDocument)
+                DocumentCounter.Instance.DocumentFound();
+
             Debug.Log($"Raccolto: {itemData.itemName}");
             SaveableObject saveable = GetComponent<SaveableObject>();
             if (saveable != null)
