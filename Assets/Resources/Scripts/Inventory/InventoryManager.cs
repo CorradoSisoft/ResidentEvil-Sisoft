@@ -51,7 +51,6 @@ public class InventoryManager : MonoBehaviour
 
     void Update()
     {
-        // Non aprire inventario se pausa è aperta
         if (Input.GetKeyDown(KeyCode.Q))
         {
             if (!isOpen && PauseMenu.IsPaused) return;
@@ -61,6 +60,23 @@ public class InventoryManager : MonoBehaviour
         if (!isOpen) return;
 
         HandleNavigation();
+        HandleMouseHover(); // ← aggiungi
+    }
+
+    void HandleMouseHover()
+    {
+        for (int i = 0; i < slotCount; i++)
+        {
+            if (slots[i] == null) continue;
+
+            if (RectTransformUtility.RectangleContainsScreenPoint(
+                slots[i].rectTransform, Input.mousePosition))
+            {
+                if (selectedIndex != i)
+                    MoveCursor(i);
+                return;
+            }
+        }
     }
 
     public void ClearInventory()

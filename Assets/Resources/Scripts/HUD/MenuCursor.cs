@@ -34,10 +34,31 @@ public class MenuCursor : MonoBehaviour
         childRect = rectTransform.GetChild(0).GetComponent<RectTransform>();
     }
 
+
     void Update()
     {
         HandleInput();
+        HandleMouseHover();
         Levitate();
+    }
+
+    void HandleMouseHover()
+    {
+        for (int i = 0; i < menuButtons.Length; i++)
+        {
+            if (menuButtons[i] == null) continue;
+
+            RectTransform rt = menuButtons[i].GetComponent<RectTransform>();
+            if (RectTransformUtility.RectangleContainsScreenPoint(rt, Input.mousePosition))
+            {
+                if (currentIndex != i)
+                {
+                    currentIndex = i;
+                    PlayMoveSound();
+                }
+                return;
+            }
+        }
     }
 
     public void RebuildLayout()
@@ -67,7 +88,7 @@ public class MenuCursor : MonoBehaviour
         menuItemsCount = menuButtons.Length;
         currentIndex = 0;
     }
-    
+
     private void HandleInput()
     {
         if (!useHorizontal)
