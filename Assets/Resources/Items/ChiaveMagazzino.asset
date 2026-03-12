@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9588753228ca29b4a9d89f1e795d235f, type: 3}
-  m_Name: Chiave Sisoft
+  m_Name: ChiaveMagazzino
   m_EditorClassIdentifier: 
-  itemName: Chiave Sisoft
+  itemName: ChiaveMagazzino
   icon: {fileID: 21300000, guid: 2ca26ebe27568474ebfbbd63e8a169b4, type: 3}
-  description: 
+  description: "Una piccola chiave arrugginita.\nSull\u2019etichetta \xE8 scritto
+    a mano: \u201CMagazzino\u201D."
   itemType: 1
-  keyId: chiave_sisoft
+  keyId: chiave_magazzino

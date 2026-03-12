@@ -10,20 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9588753228ca29b4a9d89f1e795d235f, type: 3}
-  m_Name: CorradoEnigma#1
+  m_Name: Avanguardia
   m_EditorClassIdentifier: 
-  itemName: CorradoEnigma#1
-  icon: {fileID: 21300000, guid: 2599427d992f4a046bc676b9bfe359a6, type: 3}
-  description: 'Una volta ho controllato la porta.
-
-    Sette minuti dopo ho sentito
-    un rumore.
-
-    Due passi nel corridoio.
-
-    Cinque luci che si spengono.
-
-    Quattro
-    chiavi rimaste nel cassetto.'
+  itemName: Avanguardia
+  icon: {fileID: 21300000, guid: 717bf31ab7d7442468c1d340e10ac168, type: 3}
+  description: "Fiera Catania 2022\n\nIl successo \xE8 l'arma del delitto delle aziende
+    concorrenti!\n\n-Enrico"
   itemType: 0
   keyId: 

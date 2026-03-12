@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9588753228ca29b4a9d89f1e795d235f, type: 3}
-  m_Name: Chiave Magazzino
+  m_Name: DocumentoSpeciale#4
   m_EditorClassIdentifier: 
-  itemName: Chiave Magazzino
-  icon: {fileID: 21300000, guid: 2ca26ebe27568474ebfbbd63e8a169b4, type: 3}
-  description: 
-  itemType: 1
-  keyId: chiave_magazzino
+  itemName: DocumentoSpeciale#4
+  icon: {fileID: 21300000, guid: 69c5b337a88191e4caa3e44ad15d2091, type: 3}
+  description: DocumentoSpeciale#4
+  itemType: 2
+  keyId: 
