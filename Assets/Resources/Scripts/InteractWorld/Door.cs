@@ -19,6 +19,10 @@ public class Door : MonoBehaviour, IInteragibile
 
     public bool IsOpen => isOpen;
 
+    [Header("EndGame")]
+    public bool isEndGameDoor = false;
+    public GameObject endGamePanel;
+
     public void OpenInstant()
     {
         isOpen = true;
@@ -27,6 +31,27 @@ public class Door : MonoBehaviour, IInteragibile
 
     public void Interagisci()
     {
+        // Porta EndGame
+        if (isEndGameDoor)
+        {
+            if (!DocumentCounter.Instance.IsEndingUnlocked)
+            {
+                Debug.Log("Devi trovare tutti i documenti!");
+                return;
+            }
+
+            // Apri il panel finale
+            if (endGamePanel != null)
+            {
+                endGamePanel.SetActive(true);
+                Time.timeScale = 0f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            return;
+        }
+
+        // resto del metodo invariato...
         if (isOpen || isAnimating) return;
 
         if (requiresKey)

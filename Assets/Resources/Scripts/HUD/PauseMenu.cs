@@ -13,7 +13,8 @@ public class PauseMenu : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (!IsPaused && InventoryManager.Instance.IsOpen) return;
-            if (!IsPaused && SafeLock.IsAnyOpen) return; // ← aggiungi qui
+            if (!IsPaused && SafeLock.IsAnyOpen) return;
+            if (!IsPaused && SafeLock._justClosed) { SafeLock._justClosed = false; return; } // ← qui
             if (IsPaused) Resume();
             else Pause();
         }
@@ -76,6 +77,7 @@ public class PauseMenu : MonoBehaviour
         MainMenu mainMenu = FindObjectOfType<MainMenu>(true);
         mainMenu.gameplayPanel.SetActive(false);
         mainMenu.mainMenuPanel.SetActive(true);
+        BackgroundMusic.Instance.Stop();
 
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;

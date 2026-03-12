@@ -14,6 +14,8 @@ public class SafeLock : MonoBehaviour, IInteragibile
     private string currentInput = "";
     private bool solved = false;
     private bool isOpen = false;
+    public static bool _justClosed = false;
+
 
     public static SafeLock Current { get; private set; }
 
@@ -21,7 +23,10 @@ public class SafeLock : MonoBehaviour, IInteragibile
     {
         if (!isOpen) return;
         if (Input.GetKeyDown(KeyCode.Escape))
+        {
             Close();
+            return; // ← consuma l'input
+        }
     }
 
     public void PressKey(string digit)
@@ -42,6 +47,11 @@ public class SafeLock : MonoBehaviour, IInteragibile
                 if (rewardItem != null)
                 {
                     InventoryManager.Instance.AddItem(rewardItem);
+                    
+                    // ← aggiunto
+                    if (rewardItem.itemType == ItemType.SpecialDocument)
+                        DocumentCounter.Instance.DocumentFound();
+                    
                     InventoryManager.Instance.OpenInventory();
                 }
                 GameManager.Instance.SetFlag($"safe_{gameObject.name}", true);
@@ -71,6 +81,7 @@ public class SafeLock : MonoBehaviour, IInteragibile
     public void Close()
     {
         IsAnyOpen = false;
+         _justClosed = true;
         isOpen = false;
         safePanel.SetActive(false);
         Time.timeScale = 1f;

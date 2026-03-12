@@ -9,7 +9,10 @@ public class DocumentCounter : MonoBehaviour
     private int found = 0;
 
     [Header("UI")]
-    public TextMeshProUGUI counterText; // ← trascina il TMP nell'Inspector
+    public TextMeshProUGUI counterText;
+
+    [Header("Ending")]
+    public GameObject endGamePanel; // ← trascina il panel nell'Inspector
 
     void Awake()
     {
@@ -34,17 +37,24 @@ public class DocumentCounter : MonoBehaviour
         found = count;
         for (int i = 1; i <= found; i++)
             GameManager.Instance.SetFlag($"doc_{i}", true);
-        UpdateUI(); // ← aggiorna UI anche al load
+        UpdateUI();
     }
 
     void UpdateUI()
     {
-        if (counterText != null)
+        if (counterText == null) return;
+
+        if (found >= totalDocuments)
+            counterText.text = "Esci da questo inferno";
+        else
             counterText.text = $"Trova tutti i Documenti Sisoft e scopri la verità {found}/{totalDocuments}";
     }
 
     void TriggerEnding()
     {
+        GameManager.Instance.SetFlag("ending_unlocked", true);
         Debug.Log("HAI TROVATO TUTTI I DOCUMENTI!");
     }
+
+    public bool IsEndingUnlocked => found >= totalDocuments;
 }
