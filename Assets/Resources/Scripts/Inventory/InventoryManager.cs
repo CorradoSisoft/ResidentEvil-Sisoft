@@ -71,8 +71,11 @@ public class InventoryManager : MonoBehaviour
         {
             if (slots[i] == null) continue;
 
+            Canvas canvas = slots[i].GetComponentInParent<Canvas>();
+            Camera canvasCamera = canvas != null ? canvas.worldCamera : null;
+
             if (RectTransformUtility.RectangleContainsScreenPoint(
-                slots[i].rectTransform, Input.mousePosition))
+                slots[i].rectTransform, Input.mousePosition, canvasCamera))
             {
                 if (selectedIndex != i)
                     MoveCursor(i);

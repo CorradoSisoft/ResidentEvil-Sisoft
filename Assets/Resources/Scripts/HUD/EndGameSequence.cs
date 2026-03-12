@@ -84,7 +84,7 @@ public class EndGameSequence : MonoBehaviour
         endGamePanel.SetActive(false);
 
         // Reset salvataggio
-        SaveManager.Instance.DeleteSave();
+        /* SaveManager.Instance.DeleteSave(); */
 
         // Torna al menu esattamente come fa PauseMenu.BackToMenu
         MainMenu mainMenu = FindObjectOfType<MainMenu>(true);

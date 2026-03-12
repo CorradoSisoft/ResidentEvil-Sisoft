@@ -42,7 +42,7 @@ public class MenuCursor : MonoBehaviour
         Levitate();
     }
 
-    void HandleMouseHover()
+    /* void HandleMouseHover()
     {
         for (int i = 0; i < menuButtons.Length; i++)
         {
@@ -58,6 +58,32 @@ public class MenuCursor : MonoBehaviour
                 }
 
                 // Click sinistro conferma
+                if (Input.GetMouseButtonDown(0))
+                    PressCurrentButton();
+                return;
+            }
+        }
+    } */
+    void HandleMouseHover()
+    {
+        for (int i = 0; i < menuButtons.Length; i++)
+        {
+            if (menuButtons[i] == null) continue;
+
+            RectTransform rt = menuButtons[i].GetComponent<RectTransform>();
+            
+            // ← passa la camera del Canvas
+            Canvas canvas = menuButtons[i].GetComponentInParent<Canvas>();
+            Camera canvasCamera = canvas != null ? canvas.worldCamera : null;
+            
+            if (RectTransformUtility.RectangleContainsScreenPoint(rt, Input.mousePosition, canvasCamera))
+            {
+                if (currentIndex != i)
+                {
+                    currentIndex = i;
+                    PlayMoveSound();
+                }
+
                 if (Input.GetMouseButtonDown(0))
                     PressCurrentButton();
                 return;

@@ -22,6 +22,7 @@ public class Door : MonoBehaviour, IInteragibile
     [Header("EndGame")]
     public bool isEndGameDoor = false;
     public GameObject endGamePanel;
+    public string hintDocumentiMancanti = "Trova tutti i documenti"; 
 
     public void OpenInstant()
     {
@@ -43,10 +44,7 @@ public class Door : MonoBehaviour, IInteragibile
             // Apri il panel finale
             if (endGamePanel != null)
             {
-                endGamePanel.SetActive(true);
-                Time.timeScale = 0f;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
+                EndGameSequence.Instance.StartEnding();
             }
             return;
         }
@@ -78,6 +76,25 @@ public class Door : MonoBehaviour, IInteragibile
 
     public void MostraHint(GameObject hintInteract, GameObject hintNonFunziona, GameObject hintChiave)
     {
+        // Porta EndGame
+        if (isEndGameDoor)
+        {
+            if (DocumentCounter.Instance.IsEndingUnlocked)
+            {
+                if (hintInteract != null) hintInteract.SetActive(true);
+            }
+            else
+            {
+                if (hintNonFunziona != null)
+                {
+                    var tmp = hintNonFunziona.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+                    if (tmp != null) tmp.text = hintDocumentiMancanti;
+                    hintNonFunziona.SetActive(true);
+                }
+            }
+            return;
+        }
+
         if (isOpen || isAnimating) return; // ← aggiungi isAnimating
 
         if (requiresKey)
