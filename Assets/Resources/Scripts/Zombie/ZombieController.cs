@@ -50,32 +50,44 @@ public class ZombieController : MonoBehaviour
     private bool isDead = false;
     private bool hasSeenPlayer = false;
 
+    private Vector3 startPosition;
+    private Quaternion startRotation;
+    private bool isReturning = false;
+
     public bool IsDead => isDead;
+    private bool isAlerted = false; // ← aggiunto
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        startPosition = transform.position;      // ← salva posizione iniziale
+        startRotation = zombieModel.rotation;    // ← salva rotazione iniziale
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null)
-            player = playerObj.transform;
-        else
-            Debug.LogError("Player non trovato!");
+        if (playerObj != null) player = playerObj.transform;
     }
 
     void Update()
     {
         if (isDead || player == null) return;
 
-        bool canSee = CanSeePlayer();
+        bool canSee = CanSeePlayer() || isAlerted;
 
-        if (canSee && !hasSeenPlayer)
+        if (canSee)
         {
-            hasSeenPlayer = true;
-            // Aggro sound — solo la prima volta che lo vede
-            if (zombieAudio != null && aggroSound != null)
-                zombieAudio.PlayOneShot(aggroSound);
+            isReturning = false;
+            if (!hasSeenPlayer)
+            {
+                hasSeenPlayer = true;
+                if (zombieAudio != null && aggroSound != null)
+                    zombieAudio.PlayOneShot(aggroSound);
+            }
+        }
+        else if (hasSeenPlayer)
+        {
+            hasSeenPlayer = false;
+            isReturning = true;
         }
 
         UpdateAnimator();
@@ -105,14 +117,36 @@ public class ZombieController : MonoBehaviour
         if (hasSeenPlayer)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            if (distanceToPlayer <= attackRange) TryAttack();
+            else { ChasePlayer(); HandleFootsteps(); }
+        }
+        else if (isReturning)
+        {
+            ReturnToStart();
+        }
+    }
 
-            if (distanceToPlayer <= attackRange)
-                TryAttack();
-            else
-            {
-                ChasePlayer();
-                HandleFootsteps();
-            }
+    void ReturnToStart()
+    {
+        float distanceToStart = Vector3.Distance(transform.position, startPosition);
+
+        if (distanceToStart > 0.2f)
+        {
+            Vector3 direction = (startPosition - transform.position).normalized;
+            direction.y = 0f;
+            rb.MovePosition(rb.position + direction * walkSpeed * Time.fixedDeltaTime);
+            HandleFootsteps();
+
+            // Ruota verso la posizione iniziale
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            zombieModel.rotation = Quaternion.Slerp(zombieModel.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+        else
+        {
+            // Arrivato — torna idle
+            isReturning = false;
+            rb.linearVelocity = Vector3.zero;
+            zombieModel.rotation = Quaternion.Slerp(zombieModel.rotation, startRotation, rotationSpeed * Time.deltaTime);
         }
     }
 
@@ -172,21 +206,26 @@ public class ZombieController : MonoBehaviour
 
     void UpdateAnimator()
     {
-        animator.SetBool("isWalking", hasSeenPlayer);
+        animator.SetBool("isWalking", hasSeenPlayer || isReturning);
     }
 
     public void TakeDamage(int damage)
     {
         if (isDead) return;
+
+        // Si gira immediatamente verso il player
+        Vector3 direction = (player.position - transform.position).normalized;
+        direction.y = 0f;
+        if (direction.sqrMagnitude > 0.01f)
+            zombieModel.rotation = Quaternion.LookRotation(direction);
+
         hasSeenPlayer = true;
 
-        // Suono hit
         if (zombieAudio != null && hitSound != null)
             zombieAudio.PlayOneShot(hitSound);
 
         health -= damage;
-        if (health <= 0)
-            Die();
+        if (health <= 0) Die();
     }
 
     public void Die()

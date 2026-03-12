@@ -145,7 +145,17 @@ public class SaveManager : MonoBehaviour
         foreach (var obj in FindObjectsOfType<SaveableObject>())
         {
             if (_destroyedObjects.Contains(obj.uniqueID))
+            {
+                // Se è un VoiceTrigger, non distruggerlo — solo marcalo come già triggerato
+                VoiceTrigger vt = obj.GetComponent<VoiceTrigger>();
+                if (vt != null)
+                {
+                    vt.SetTriggered();
+                    continue; // ← salta il Destroy
+                }
+
                 Destroy(obj.gameObject);
+            }
         }
 
         // Stanze visitate

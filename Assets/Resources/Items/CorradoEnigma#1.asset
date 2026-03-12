@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9588753228ca29b4a9d89f1e795d235f, type: 3}
+  m_Name: CorradoEnigma#1
+  m_EditorClassIdentifier: 
+  itemName: CorradoEnigma#1
+  icon: {fileID: 21300000, guid: e97188291df3a184caa623a9cac993bd, type: 3}
+  description: '1 volta ho controllato la porta.
+
+    7 minuti dopo ho sentito un
+    rumore.
+
+    2 passi nel corridoio.
+
+    5 luci che si spengono.
+
+    4 chiavi
+    rimaste nel cassetto.'
+  itemType: 0
+  keyId: 
