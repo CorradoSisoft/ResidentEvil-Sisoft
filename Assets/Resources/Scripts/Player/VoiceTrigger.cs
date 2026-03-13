@@ -13,7 +13,7 @@ public class VoiceTrigger : MonoBehaviour
     public string subtitleString = "Che ci fai qui?";
     public float subtitleDuration = 3f;
 
-    private bool triggered = false;
+    public bool triggered = false;
 
     void Start()
     {

@@ -82,9 +82,16 @@ public class EndGameSequence : MonoBehaviour
     private void ReturnToMenu()
     {
         endGamePanel.SetActive(false);
+        Time.timeScale = 1f;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
+
+    /* private void ReturnToMenu()
+    {
+        endGamePanel.SetActive(false);
 
         // Reset salvataggio
-        /* SaveManager.Instance.DeleteSave(); */
+        //SaveManager.Instance.DeleteSave(); 
 
         // Torna al menu esattamente come fa PauseMenu.BackToMenu
         MainMenu mainMenu = FindObjectOfType<MainMenu>(true);
@@ -107,5 +114,5 @@ public class EndGameSequence : MonoBehaviour
         }
 
         StartCoroutine(FadeManager.Instance.FadeInRoutine());
-    }
+    } */
 }

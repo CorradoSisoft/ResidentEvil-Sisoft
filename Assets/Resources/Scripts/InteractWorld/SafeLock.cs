@@ -67,6 +67,7 @@ public class SafeLock : MonoBehaviour, IInteragibile
 
     public void Interagisci()
     {
+        Debug.Log($"[SafeLock] {gameObject.name} Interagisci chiamato, solved={solved}");
         if (solved) return;
         IsAnyOpen = true;
         isOpen = true;
@@ -103,5 +104,8 @@ public class SafeLock : MonoBehaviour, IInteragibile
     {
         solved = true;
         GameManager.Instance.SetFlag($"safe_{gameObject.name}", true);
+        
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
     }
 }

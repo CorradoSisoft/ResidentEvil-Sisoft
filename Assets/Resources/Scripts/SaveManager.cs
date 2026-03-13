@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
+using System.Collections;
 
 public class SaveManager : MonoBehaviour
 {
@@ -82,6 +83,18 @@ public class SaveManager : MonoBehaviour
 
     // ─── LOAD ───────────────────────────────────────────
     public void Load()
+    {
+        StartCoroutine(LoadDelayed());
+    }
+
+    private IEnumerator LoadDelayed()
+    {
+        yield return null; // aspetta un frame
+        yield return null; // secondo frame per sicurezza
+        LoadInternal();
+    }
+
+    public void LoadInternal()
     {
         if (!File.Exists(savePath))
         {
