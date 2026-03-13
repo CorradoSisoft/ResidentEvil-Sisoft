@@ -78,9 +78,19 @@ public class PlayerMovement : MonoBehaviour
         rb.isKinematic = false;
         rb.linearVelocity = Vector3.zero;
         animator.SetBool("isDeath", false);
+        animator.SetBool("isWalking", false);   // ← resetta anche questi
+        animator.SetBool("isShooting", false);  // ← per sicurezza
         isShooting = false;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        // Reset salute per evitare Die() immediato se Load() è lento
+        PlayerHealth ph = GetComponent<PlayerHealth>();
+        if (ph != null)
+        {
+            ph.currentHealth = ph.maxHealth;
+            ph.NotifyHealthChanged();
+        }
     }
 
     void HandleShootingInput()

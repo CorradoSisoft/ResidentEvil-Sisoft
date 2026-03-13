@@ -90,6 +90,7 @@ public class EndGameSequence : MonoBehaviour
         MainMenu mainMenu = FindObjectOfType<MainMenu>(true);
         mainMenu.gameplayPanel.SetActive(false);
         mainMenu.mainMenuPanel.SetActive(true);
+        mainMenu.RefreshMenu(); // ← aggiungi questa riga
 
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;

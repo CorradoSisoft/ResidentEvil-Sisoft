@@ -27,13 +27,25 @@ public class MenuCursor : MonoBehaviour
 
     private RectTransform childRect;
 
+    // Pulsanti originali (tutti, inclusi quelli nascosti) e le loro posizioni originali
+    private Button[] _allButtons;
+    private Vector2[] _originalButtonPositions;
+
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         initialPosition = rectTransform.anchoredPosition;
         childRect = rectTransform.GetChild(0).GetComponent<RectTransform>();
-    }
 
+        // Salva l'array originale completo e le posizioni originali di ogni pulsante
+        _allButtons = (Button[])menuButtons.Clone();
+        _originalButtonPositions = new Vector2[menuButtons.Length];
+        for (int i = 0; i < menuButtons.Length; i++)
+        {
+            if (menuButtons[i] != null)
+                _originalButtonPositions[i] = menuButtons[i].GetComponent<RectTransform>().anchoredPosition;
+        }
+    }
 
     void Update()
     {
@@ -42,28 +54,6 @@ public class MenuCursor : MonoBehaviour
         Levitate();
     }
 
-    /* void HandleMouseHover()
-    {
-        for (int i = 0; i < menuButtons.Length; i++)
-        {
-            if (menuButtons[i] == null) continue;
-
-            RectTransform rt = menuButtons[i].GetComponent<RectTransform>();
-            if (RectTransformUtility.RectangleContainsScreenPoint(rt, Input.mousePosition))
-            {
-                if (currentIndex != i)
-                {
-                    currentIndex = i;
-                    PlayMoveSound();
-                }
-
-                // Click sinistro conferma
-                if (Input.GetMouseButtonDown(0))
-                    PressCurrentButton();
-                return;
-            }
-        }
-    } */
     void HandleMouseHover()
     {
         for (int i = 0; i < menuButtons.Length; i++)
@@ -72,7 +62,6 @@ public class MenuCursor : MonoBehaviour
 
             RectTransform rt = menuButtons[i].GetComponent<RectTransform>();
             
-            // ← passa la camera del Canvas
             Canvas canvas = menuButtons[i].GetComponentInParent<Canvas>();
             Camera canvasCamera = canvas != null ? canvas.worldCamera : null;
             
@@ -93,27 +82,39 @@ public class MenuCursor : MonoBehaviour
 
     public void RebuildLayout()
     {
-        // Crea lista dei soli pulsanti visibili
-        var visibleButtons = new System.Collections.Generic.List<Button>();
-        
-        for (int i = 0; i < menuButtons.Length; i++)
+        // Ripristina PRIMA le posizioni originali di tutti i pulsanti
+        for (int i = 0; i < _allButtons.Length; i++)
         {
-            if (menuButtons[i] == null) continue;
-            if (!menuButtons[i].gameObject.activeSelf) continue;
-            visibleButtons.Add(menuButtons[i]);
+            if (_allButtons[i] != null)
+                _allButtons[i].GetComponent<RectTransform>().anchoredPosition = _originalButtonPositions[i];
         }
 
-        // Riposiziona
+        // Raccoglie i pulsanti visibili partendo dall'array originale completo
+        var visibleButtons = new System.Collections.Generic.List<Button>();
+        for (int i = 0; i < _allButtons.Length; i++)
+        {
+            if (_allButtons[i] == null) continue;
+            if (!_allButtons[i].gameObject.activeSelf) continue;
+            visibleButtons.Add(_allButtons[i]);
+        }
+
+        if (visibleButtons.Count == 0) return;
+
+        // Usa la posizione originale del primo pulsante visibile come ancora
+        int firstOriginalIndex = System.Array.IndexOf(_allButtons, visibleButtons[0]);
+        Vector2 anchor = _originalButtonPositions[firstOriginalIndex];
+
+        // Riposiziona in sequenza
         for (int i = 0; i < visibleButtons.Count; i++)
         {
             RectTransform rt = visibleButtons[i].GetComponent<RectTransform>();
             if (!useHorizontal)
-                rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, initialPosition.y - (offsetY * i));
+                rt.anchoredPosition = new Vector2(anchor.x, anchor.y - (offsetY * i));
             else
-                rt.anchoredPosition = new Vector2(initialPosition.x + (offsetX * i), rt.anchoredPosition.y);
+                rt.anchoredPosition = new Vector2(anchor.x + (offsetX * i), anchor.y);
         }
 
-        // Aggiorna l'array con solo i pulsanti visibili
+        // Aggiorna l'array attivo con solo i pulsanti visibili
         menuButtons = visibleButtons.ToArray();
         menuItemsCount = menuButtons.Length;
         currentIndex = 0;
@@ -139,7 +140,7 @@ public class MenuCursor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
             PressCurrentButton();
 
-        setTextColor(currentIndex, Color.white); 
+        setTextColor(currentIndex, Color.white);
     }
 
     private void Levitate()
@@ -189,18 +190,9 @@ public class MenuCursor : MonoBehaviour
             PlayMoveSound();
         }
     }
-    
-    // ← METODO PUBBLICO PER BATTLEMANAGER
-    public int GetCurrentIndex()
-    {
-        return currentIndex;
-    }
-    
-    // ← RESET INDICE (per quando cambiano i nemici disponibili)
-    public void ResetIndex()
-    {
-        currentIndex = 0;
-    }
+
+    public int GetCurrentIndex() => currentIndex;
+    public void ResetIndex() => currentIndex = 0;
 
     private void PressCurrentButton()
     {

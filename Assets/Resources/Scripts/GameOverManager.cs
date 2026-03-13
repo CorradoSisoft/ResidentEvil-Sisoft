@@ -29,18 +29,14 @@ public class GameOverManager : MonoBehaviour
 
     private IEnumerator GameOverSequence()
     {
-        // Blocca tutto
         Time.timeScale = 0f;
 
-        // Fade nero
         if (FadeManager.Instance != null)
             yield return StartCoroutine(FadeManager.Instance.FadeOutRoutine());
 
-        // Mostra pannello
         if (gameOverPanel != null)
             gameOverPanel.SetActive(true);
 
-        // Musica game over
         if (audioSource != null && gameOverMusic != null)
         {
             audioSource.clip = gameOverMusic;
@@ -48,7 +44,6 @@ public class GameOverManager : MonoBehaviour
             audioSource.Play();
         }
 
-        // Cursore visibile
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -65,40 +60,28 @@ public class GameOverManager : MonoBehaviour
 
     private IEnumerator LoadGameSequence()
     {
-        // Fade in per togliere il nero
-        yield return StartCoroutine(FadeManager.Instance.FadeInRoutine());
-
         Time.timeScale = 1f;
         gameOverPanel.SetActive(false);
 
         PlayerMovement pm = FindObjectOfType<PlayerMovement>();
         if (pm != null) pm.OnPlayerRespawn();
 
+        yield return null;
+
         SaveManager.Instance.Load();
+
+        yield return null;
+
+        yield return StartCoroutine(FadeManager.Instance.FadeInRoutine());
     }
 
     private IEnumerator BackToMenuSequence()
     {
-        yield return StartCoroutine(FadeManager.Instance.FadeInRoutine());
-
-        Time.timeScale = 0f;
+        Time.timeScale = 1f;
         gameOverPanel.SetActive(false);
 
-        MainMenu mainMenu = FindObjectOfType<MainMenu>(true); // true = cerca anche inattivi
-        mainMenu.gameplayPanel.SetActive(false);
-        mainMenu.mainMenuPanel.SetActive(true);
+        yield return StartCoroutine(FadeManager.Instance.FadeInRoutine());
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        GameManager.Instance.SetState(GameState.MainMenu);
-
-        // Ricostruisce il menu cursor
-        MenuCursor menuCursor = FindObjectOfType<MenuCursor>();
-        if (menuCursor != null)
-        {
-            menuCursor.enabled = true;
-            menuCursor.menuItemsCount = SaveManager.Instance.SaveExists() ? 3 : 2;
-            menuCursor.RebuildLayout();
-        }
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

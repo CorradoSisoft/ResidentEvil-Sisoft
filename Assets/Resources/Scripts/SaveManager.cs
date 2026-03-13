@@ -183,6 +183,8 @@ public class SaveManager : MonoBehaviour
     {
         if (File.Exists(savePath))
             File.Delete(savePath);
+        
+        _destroyedObjects.Clear(); // ← aggiungi questa riga
     }
 
     // ─── REGISTRO OGGETTI DISTRUTTI ─────────────────────

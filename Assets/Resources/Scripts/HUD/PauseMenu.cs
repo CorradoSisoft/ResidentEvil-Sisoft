@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class PauseMenu : MonoBehaviour
@@ -8,13 +9,16 @@ public class PauseMenu : MonoBehaviour
 
     public GameObject pauseMenuUI;
 
+    [Header("Pulsanti")]
+    public GameObject loadButton;
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (!IsPaused && InventoryManager.Instance.IsOpen) return;
             if (!IsPaused && SafeLock.IsAnyOpen) return;
-            if (!IsPaused && SafeLock._justClosed) { SafeLock._justClosed = false; return; } // ← qui
+            if (!IsPaused && SafeLock._justClosed) { SafeLock._justClosed = false; return; }
             if (IsPaused) Resume();
             else Pause();
         }
@@ -22,12 +26,14 @@ public class PauseMenu : MonoBehaviour
 
     void Pause()
     {
+        if (loadButton != null)
+            loadButton.SetActive(SaveManager.Instance.SaveExists());
+
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         IsPaused = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        //BackgroundMusic.Instance.Stop(); // ← ferma musica
     }
 
     public void Resume()
@@ -37,7 +43,6 @@ public class PauseMenu : MonoBehaviour
         IsPaused = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        //BackgroundMusic.Instance.PlayFloor(); // ← riprende musica
     }
 
     public void LoadGame()
@@ -61,6 +66,8 @@ public class PauseMenu : MonoBehaviour
         PlayerMovement pm = FindObjectOfType<PlayerMovement>();
         if (pm != null) pm.OnPlayerRespawn();
 
+        yield return null;
+
         SaveManager.Instance.Load();
 
         yield return StartCoroutine(FadeManager.Instance.FadeInRoutine());
@@ -69,29 +76,10 @@ public class PauseMenu : MonoBehaviour
     private IEnumerator BackToMenuSequence()
     {
         IsPaused = false;
-        pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
 
         yield return StartCoroutine(FadeManager.Instance.FadeOutRoutine());
 
-        MainMenu mainMenu = FindObjectOfType<MainMenu>(true);
-        mainMenu.gameplayPanel.SetActive(false);
-        mainMenu.mainMenuPanel.SetActive(true);
-        BackgroundMusic.Instance.Stop();
-
-        Time.timeScale = 0f;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        GameManager.Instance.SetState(GameState.MainMenu);
-
-        MenuCursor menuCursor = FindObjectOfType<MenuCursor>();
-        if (menuCursor != null)
-        {
-            menuCursor.enabled = true;
-            menuCursor.menuItemsCount = SaveManager.Instance.SaveExists() ? 3 : 2;
-            menuCursor.RebuildLayout();
-        }
-
-        yield return StartCoroutine(FadeManager.Instance.FadeInRoutine());
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

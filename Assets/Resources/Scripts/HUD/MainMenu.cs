@@ -44,12 +44,9 @@ public class MainMenu : MonoBehaviour
 
     public void Play()
     {
+        SaveManager.Instance.DeleteSave();
+        Debug.Log($"[MainMenu] Save cancellato. SaveExists: {SaveManager.Instance.SaveExists()}");
         StartCoroutine(PlaySequence());
-        /* mainMenuPanel.SetActive(false);
-        gameplayPanel.SetActive(true);
-        Time.timeScale = 1f;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false; */
     }
     
     private IEnumerator PlaySequence()
@@ -128,5 +125,20 @@ public class MainMenu : MonoBehaviour
     public void Exit()
     {
         Application.Quit();
+    }
+
+    public void RefreshMenu()
+    {
+        if (continuaButton != null)
+        {
+            continuaButton.SetActive(SaveManager.Instance.SaveExists());
+            MenuCursor menuCursor = FindObjectOfType<MenuCursor>();
+            if (menuCursor != null)
+            {
+                menuCursor.enabled = true; // riabilita il cursore
+                menuCursor.menuItemsCount = SaveManager.Instance.SaveExists() ? 3 : 2;
+                menuCursor.RebuildLayout();
+            }
+        }
     }
 }
