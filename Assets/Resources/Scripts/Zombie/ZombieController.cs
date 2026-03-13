@@ -44,6 +44,9 @@ public class ZombieController : MonoBehaviour
 
     [Header("Hit")]
     public AudioClip hitSound;
+    
+    [Header("Hit Effects")]
+    public GameObject bloodHitParticlePrefab;
 
     private Rigidbody rb;
     private Transform player;
@@ -212,6 +215,13 @@ public class ZombieController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (isDead) return;
+
+        // Particelle sangue hit
+        if (bloodHitParticlePrefab != null && bloodOrigin != null)
+        {
+            GameObject particles = Instantiate(bloodHitParticlePrefab, bloodOrigin.position, Quaternion.identity);
+            Destroy(particles, 1f);
+        }
 
         // Si gira immediatamente verso il player
         Vector3 direction = (player.position - transform.position).normalized;

@@ -37,10 +37,14 @@ public class GameOverManager : MonoBehaviour
         if (gameOverPanel != null)
             gameOverPanel.SetActive(true);
 
-        // Nasconde il bottone Load se non c'è un salvataggio
         Transform loadButton = gameOverPanel.transform.Find("gameover_load_btn");
         if (loadButton != null)
             loadButton.gameObject.SetActive(SaveManager.Instance.SaveExists());
+
+        // ← aggiunto
+        MenuCursor menuCursor = gameOverPanel.GetComponentInChildren<MenuCursor>();
+        if (menuCursor != null)
+            menuCursor.RebuildLayout();
 
         if (audioSource != null && gameOverMusic != null)
         {

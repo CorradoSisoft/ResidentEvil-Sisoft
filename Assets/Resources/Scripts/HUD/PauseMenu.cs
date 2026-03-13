@@ -34,6 +34,11 @@ public class PauseMenu : MonoBehaviour
         IsPaused = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        // ← aggiunto
+        MenuCursor menuCursor = pauseMenuUI.GetComponentInChildren<MenuCursor>();
+        if (menuCursor != null)
+            menuCursor.RebuildLayout();
     }
 
     public void Resume()

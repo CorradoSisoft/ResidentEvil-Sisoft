@@ -41,14 +41,19 @@ public class BloodPool : MonoBehaviour
         for (int i = 0; i < segments; i++)
         {
             float angle = 2 * Mathf.PI * i / segments;
-            vertices[i + 1] = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f);
+            float radius = Random.Range(0.7f, 1f); // ← irregolarità
+            vertices[i + 1] = new Vector3(
+                Mathf.Cos(angle) * radius,
+                Mathf.Sin(angle) * radius,
+                0f
+            );
         }
 
         for (int i = 0; i < segments; i++)
         {
             triangles[i * 3] = 0;
-            triangles[i * 3 + 1] = (i + 2 > segments) ? 1 : i + 2; // invertito
-            triangles[i * 3 + 2] = i + 1;                            // invertito
+            triangles[i * 3 + 1] = (i + 2 > segments) ? 1 : i + 2;
+            triangles[i * 3 + 2] = i + 1;
         }
 
         mesh.vertices = vertices;

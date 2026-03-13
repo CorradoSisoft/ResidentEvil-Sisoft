@@ -14,6 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: DocumentoSpeciale#2
   icon: {fileID: 21300000, guid: 69c5b337a88191e4caa3e44ad15d2091, type: 3}
-  description: DocumentoSpeciale#2
+  description: "DOCUMENTO #2 \u2014 \"Rapporto interno di Anna\"\n\nRAPPORTO RISERVATO
+    \u2014 VICECAPO OPERATIVO\nRedatto da: Anna Maria Coco\nData:  Novembre 2025
+    \nI moduli nascosti integrati in PROGEAV procedono secondo i tempi concordati
+    con Umbrella. Il composto G-SISOFT viene veicolato attraverso i canali di aggiornamento
+    del software senza destare sospetti.\nIl personale ordinario \u2014 Francesco
+    e Corrado in particolare \u2014 continua a lavorare su PROGEAV credendo si tratti
+    di normale manutenzione. Non sospettano nulla. Ogni giorno lavorano su qualcosa
+    di cui ignorano completamente la vera natura.\nEnrico vuole accelerare i tempi
+    del rilascio finale. Umbrella ha fretta.\n\u2014 A.M.C."
   itemType: 2
   keyId: 

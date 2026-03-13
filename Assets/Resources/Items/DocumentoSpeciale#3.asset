@@ -14,6 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: DocumentoSpeciale#3
   icon: {fileID: 21300000, guid: 69c5b337a88191e4caa3e44ad15d2091, type: 3}
-  description: DocumentoSpeciale#3
+  description: "DOCUMENTO #3 \u2014 \"L'ultima mail di Francesco\"\n\nDA: Francesco\nA:
+    Corrado\nData: 20/02/2026 \u2014 ore 21:13\nAmico, stavo facendo una modifica
+    di routine su PROGEAV quando ho trovato qualcosa nei moduli di aggiornamento
+    che non doveva esserci. Codice che non abbiamo scritto noi. Processi nascosti
+    che non capisco.\nHo provato a parlarne con Enrico \u2014 mi ha detto di non
+    toccare nulla e tornare alla mia postazione. Mi ha guardato in un modo strano.\nDevi
+    venire in ufficio stanotte. Non per mail, devo mostrarti tutto di persona.\nNon
+    dire niente a nessuno.\nTi aspetto.\n\u2014 Francesco"
   itemType: 2
   keyId: 

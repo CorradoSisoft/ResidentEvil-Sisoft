@@ -14,6 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: DocumentoSpeciale#1
   icon: {fileID: 21300000, guid: 69c5b337a88191e4caa3e44ad15d2091, type: 3}
-  description: DocumentoSpeciale#1
+  description: "DOCUMENTO #1 \u2014 \"Accordo di riservatezza\"\n\nSISOFT S.R.L.
+    \u2014 USO INTERNO\nOggetto: Protocollo di collaborazione strategica \u2014 UMBRELLA
+    CORPORATION\nData: Marzo 2025 \nIl presente accordo sancisce la partnership esclusiva
+    tra Sisoft S.r.l. e Umbrella Corporation. Il software PROGEAV verr\xE0 utilizzato
+    come infrastruttura di copertura per lo sviluppo e la distribuzione del composto
+    G-SISOFT. Il personale operativo non autorizzato deve continuare a lavorare su
+    PROGEAV come di consueto, ignaro della sua vera funzione.\nLa divulgazione di
+    qualsiasi informazione relativa al progetto comporter\xE0 conseguenze immediate.\nFirmatari:
+    Enrico [REDATTO], Anna Maria Coco\n\"Il progresso richiede sacrifici. Alcuni
+    pi\xF9 grandi di altri.\""
   itemType: 2
   keyId: 
