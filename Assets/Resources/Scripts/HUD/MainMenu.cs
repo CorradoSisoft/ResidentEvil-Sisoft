@@ -25,7 +25,6 @@ public class MainMenu : MonoBehaviour
         gameplayPanel.SetActive(false);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        FadeManager.Instance.SetFadeInstant(0f);
         GameManager.Instance.SetState(GameState.MainMenu);
 
         if (continuaButton != null)
@@ -35,11 +34,18 @@ public class MainMenu : MonoBehaviour
             if (menuCursor != null)
             {
                 menuCursor.menuItemsCount = SaveManager.Instance.SaveExists() ? 3 : 2;
-                menuCursor.RebuildLayout(); // ← riposiziona i pulsanti
+                menuCursor.RebuildLayout();
             }
         }
 
         BackgroundMusic.Instance.Stop();
+        StartCoroutine(InitFade());
+    }
+
+    private IEnumerator InitFade()
+    {
+        yield return null; // aspetta un frame che tutti gli Awake siano eseguiti
+        FadeManager.Instance.SetFadeInstant(0f);
     }
 
     public void Play()
