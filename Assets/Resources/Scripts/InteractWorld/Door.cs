@@ -5,7 +5,7 @@ public class Door : MonoBehaviour, IInteragibile
 {
     [Header("Impostazioni")]
     public bool requiresKey = false;
-    public string requiredKeyId; // deve corrispondere a ItemData.keyId
+    public string requiredKeyId;
     public float openAngle = 90f;
     public float openSpeed = 0.5f;
 
@@ -14,15 +14,18 @@ public class Door : MonoBehaviour, IInteragibile
 
     [Header("Audio")]
     public AudioSource audioSource;
-    public AudioClip openSound;      // suono porta
-    public AudioClip voiceSound;     // voce personaggio
+    public AudioClip openSound;
+    public AudioClip voiceSound;
 
     public bool IsOpen => isOpen;
 
     [Header("EndGame")]
     public bool isEndGameDoor = false;
     public GameObject endGamePanel;
-    public string hintDocumentiMancanti = "Trova tutti i documenti"; 
+    public string hintDocumentiMancanti = "Trova tutti i documenti";
+
+    [Header("Hints")]
+    public string hintChiaveMancante = "Serve una chiave!";
 
     public void OpenInstant()
     {
@@ -32,7 +35,6 @@ public class Door : MonoBehaviour, IInteragibile
 
     public void Interagisci()
     {
-        // Porta EndGame
         if (isEndGameDoor)
         {
             if (!DocumentCounter.Instance.IsEndingUnlocked)
@@ -41,7 +43,6 @@ public class Door : MonoBehaviour, IInteragibile
                 return;
             }
 
-            // Apri il panel finale
             if (endGamePanel != null)
             {
                 EndGameSequence.Instance.StartEnding();
@@ -49,7 +50,6 @@ public class Door : MonoBehaviour, IInteragibile
             return;
         }
 
-        // resto del metodo invariato...
         if (isOpen || isAnimating) return;
 
         if (requiresKey)
@@ -76,7 +76,6 @@ public class Door : MonoBehaviour, IInteragibile
 
     public void MostraHint(GameObject hintInteract, GameObject hintNonFunziona, GameObject hintChiave)
     {
-        // Porta EndGame
         if (isEndGameDoor)
         {
             if (DocumentCounter.Instance.IsEndingUnlocked)
@@ -95,7 +94,7 @@ public class Door : MonoBehaviour, IInteragibile
             return;
         }
 
-        if (isOpen || isAnimating) return; // ← aggiungi isAnimating
+        if (isOpen || isAnimating) return;
 
         if (requiresKey)
         {
@@ -106,7 +105,12 @@ public class Door : MonoBehaviour, IInteragibile
             }
             else
             {
-                if (hintChiave != null) hintChiave.SetActive(true);
+                if (hintNonFunziona != null)
+                {
+                    var tmp = hintNonFunziona.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+                    if (tmp != null) tmp.text = hintChiaveMancante;
+                    hintNonFunziona.SetActive(true);
+                }
             }
         }
         else
