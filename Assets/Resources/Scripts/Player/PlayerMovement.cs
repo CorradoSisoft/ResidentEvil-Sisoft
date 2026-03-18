@@ -15,6 +15,13 @@ public class PlayerMovement : MonoBehaviour
     public float cameraAdjustSpeed = 5f;
     public LayerMask cameraObstacleMask;
 
+    [Header("First Person Camera")]
+    public Camera firstPersonCamera;
+    public KeyCode switchCameraKey = KeyCode.V;
+    public float fpMouseSensitivity = 2f;
+    private bool isFirstPerson = false;
+    private float fpYaw = 0f;
+
     [Header("Shooting")]
     public float mouseRotationSpeed = 3f;
     public Transform shootOrigin; // Trascina qui l'empty GameObject
@@ -48,28 +55,84 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         currentCameraDistance = CameraDistance;
+
+        // Assicurati che la FP camera parta disabilitata
+        if (firstPersonCamera != null)
+            firstPersonCamera.gameObject.SetActive(false);
     }
 
     void Update()
     {
         if (PauseMenu.IsPaused || InventoryManager.Instance.IsOpen) return;
 
+        // Switch telecamera
+        if (Input.GetKeyDown(switchCameraKey))
+            ToggleCamera();
+
         float horizontal = Input.GetAxisRaw("Horizontal"); // ← Raw
         float vertical = Input.GetAxisRaw("Vertical");     // ← Raw
         Vector3 movement = new Vector3(horizontal, 0f, vertical).normalized;
 
         HandleFootsteps();
-
         HandleShootingInput();
         RotateModel();
         UpdateAnimator();
-        CameraFollow();
+
+        if (isFirstPerson)
+            CameraFollowFirstPerson();
+        else
+            CameraFollow();
     }
 
     void FixedUpdate()
     {
         if (PauseMenu.IsPaused || InventoryManager.Instance.IsOpen) return;
         MovementPlayer();
+    }
+
+    void ToggleCamera()
+    {
+        isFirstPerson = !isFirstPerson;
+
+        mainCamera.gameObject.SetActive(!isFirstPerson);
+
+        if (firstPersonCamera != null)
+            firstPersonCamera.gameObject.SetActive(isFirstPerson);
+
+        if (isFirstPerson)
+        {
+            // Sincronizza lo yaw FP con la rotazione attuale del player model
+            fpYaw = playerModel.eulerAngles.y;
+
+            // Blocca e nasconde il cursore in FP
+            SetCursorLocked();
+
+            // Mostra crosshair
+            if (FPCrosshair.Instance != null)
+                FPCrosshair.Instance.SetVisible(true);
+        }
+        else
+        {
+            // Ripristina cursore in terza persona
+            SetCursorFree();
+
+            // Nascondi crosshair
+            if (FPCrosshair.Instance != null)
+                FPCrosshair.Instance.SetVisible(false);
+        }
+    }
+
+    void CameraFollowFirstPerson()
+    {
+        if (firstPersonCamera == null) return;
+
+        // Leggi input mouse solo orizzontale
+        fpYaw += Input.GetAxis("Mouse X") * fpMouseSensitivity;
+
+        // Ruota solo sull'asse Y, mantiene X (20°) e Z impostati nel Transform
+        float pitchX = firstPersonCamera.transform.localEulerAngles.x;
+        float rollZ  = firstPersonCamera.transform.localEulerAngles.z;
+        firstPersonCamera.transform.rotation = Quaternion.Euler(pitchX, fpYaw, rollZ);
     }
 
     public void OnPlayerRespawn()
@@ -81,8 +144,11 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("isWalking", false);   // ← resetta anche questi
         animator.SetBool("isShooting", false);  // ← per sicurezza
         isShooting = false;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        SetCursorFree();
+
+        // Se era in FP, torna alla terza persona al respawn
+        if (isFirstPerson)
+            ToggleCamera();
 
         // Reset salute per evitare Die() immediato se Load() è lento
         PlayerHealth ph = GetComponent<PlayerHealth>();
@@ -99,16 +165,14 @@ public class PlayerMovement : MonoBehaviour
         {
             isShooting = true;
             animator.SetBool("isShooting", true); // Imposta SUBITO senza aspettare UpdateAnimator
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            SetCursorLocked();
         }
 
         if (Input.GetMouseButtonUp(1))
         {
             isShooting = false;
             animator.SetBool("isShooting", false); // Imposta SUBITO
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            SetCursorFree();
         }
 
         if (isShooting)
@@ -204,22 +268,37 @@ public class PlayerMovement : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        Vector3 movement = new Vector3(horizontal, 0f, vertical).normalized;
+        Vector3 inputDir = new Vector3(horizontal, 0f, vertical).normalized;
 
-        if (movement.magnitude > 0)
+        if (inputDir.magnitude > 0)
         {
             isShooting = false;
             animator.SetBool("isShooting", false);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            SetCursorFree();
         }
 
         if (isShooting) return;
 
+        Vector3 movement;
+
+        if (isFirstPerson)
+        {
+            // In FP: ruota l'input in base allo yaw della camera
+            Quaternion camYawRotation = Quaternion.Euler(0f, fpYaw, 0f);
+            movement = camYawRotation * inputDir;
+
+            // Ruota anche il playerModel nella direzione del movimento
+            if (inputDir.magnitude > 0)
+                playerModel.rotation = Quaternion.Euler(0f, fpYaw, 0f);
+        }
+        else
+        {
+            movement = inputDir;
+        }
+
         bool isRunning = false;
         float currentSpeed = isRunning ? speed * runMultiplier : speed;
 
-        // Usa velocity invece di MovePosition
         Vector3 targetVelocity = movement * currentSpeed;
         targetVelocity.y = rb.linearVelocity.y; // mantieni la gravità
         rb.linearVelocity = targetVelocity;
@@ -242,8 +321,7 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("isShooting", false);
 
         // Cursore normale
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        SetCursorFree();
     }
 
 
@@ -328,5 +406,20 @@ public class PlayerMovement : MonoBehaviour
         cameraPosition.x = transform.position.x;
         cameraPosition.z = transform.position.z - currentCameraDistance;
         mainCamera.transform.position = cameraPosition;
+    }
+
+    /// <summary>
+    /// Imposta il cursore solo se NON siamo in modalità FP.
+    /// In FP il cursore resta sempre bloccato e invisibile.
+    /// </summary>
+    void SetCursorFree()
+    {
+        if (isFirstPerson) return;
+        SetCursorFree();
+    }
+
+    void SetCursorLocked()
+    {
+        SetCursorLocked();
     }
 }
