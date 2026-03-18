@@ -415,11 +415,13 @@ public class PlayerMovement : MonoBehaviour
     void SetCursorFree()
     {
         if (isFirstPerson) return;
-        SetCursorFree();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     void SetCursorLocked()
     {
-        SetCursorLocked();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }
